@@ -1,0 +1,43 @@
+Table Usuario {
+  id_usuario integer [primary key, increment]
+  nombre varchar [not null]
+  apellido varchar [not null]
+  mail varchar [not null, unique]
+  password_hash varchar [not null]
+  rol varchar [not null, check: `rol in ('cliente', 'admin', 'super_admin')`]
+  activo bool [not null]
+  fecha_alta datetime [not null]
+}
+Table Espacio {
+  id_espacio int [primary key, increment]
+  nombre varchar [not null]
+  descripcion text
+  capacidad integer [not null]
+  ubicacion varchar [not null]
+  precio_por_turno decimal [not null]
+  activo bool [not null]
+}
+Table Turno {
+  id_turno int [primary key, increment]
+  nombre varchar [not null]
+  hora_inicio time [not null]
+  hora_fin time [not null]
+}
+
+Table Reserva {
+  id_reserva int [primary key, increment]
+  id_usuario int [not null]
+  id_espacio int [not null]
+  id_turno int [not null]
+  fecha date [not null]
+  precio decimal [not null]
+  estado varchar [not null, check: `estado in ('pendiente', 'confirmada', 'cancelada')`]
+  fecha_creacion datetime [not null]
+    indexes {
+    (id_espacio, fecha, id_turno) [unique]
+  }
+}
+
+Ref: Reserva.id_usuario > Usuario.id_usuario
+Ref: Reserva.id_espacio > Espacio.id_espacio
+Ref: Reserva.id_turno > Turno.id_turno
