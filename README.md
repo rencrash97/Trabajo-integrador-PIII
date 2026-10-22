@@ -1,16 +1,16 @@
-# React + Vite
+# Resumen del proyecto
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+    El objetivo del proyecto es crear una web SPA para la gestión de alquileres de oficinas de una empresa no existente, frontend, backend y base de datos, a partir de JSX (Node, React, Vite)
 
-Currently, two official plugins are available:
+## Que falta hacer?
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+    Backend funcional
+    Frontend funcional
+    Autorizaciones para cada nivel de usuario
+    Seguridad con jwt
 
-## React Compiler
+    Basicamente todo :/
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## No olvidar
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+    Para el tpi de Metodologia se pide registrar todos los movimientos con commits e issues en github. No se olviden de agregarlos y aclarar cada cosa que se suba al repo
