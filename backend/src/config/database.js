@@ -1,6 +1,5 @@
-require("dotenv").config();
-
-const mysql = require("mysql2/promise");
+import "dotenv/config";
+import mysql from "mysql2/promise";
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
@@ -12,6 +11,6 @@ const pool = mysql.createPool({
   connectionLimit: 10,
 });
 
-module.exports = pool;
+export default pool;
 
 // pool: mantiene un conjunto de conexiones que el backend puede reutilizar

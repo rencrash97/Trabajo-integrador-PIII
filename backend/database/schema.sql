@@ -1,4 +1,4 @@
--- Active: 1779922585504@@127.0.0.1@3306
+-- Active: 1779922585504@@127.0.0.1@3306@coworking
 CREATE DATABASE coworking;
 
 USE coworking;
