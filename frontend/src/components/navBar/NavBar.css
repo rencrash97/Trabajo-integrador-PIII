@@ -1,0 +1,11 @@
+.navbar-custom {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid #ccc;
+  background-color: rgb(28, 108, 228);
+
+}
+
+
+
