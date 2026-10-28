@@ -4,6 +4,8 @@ import pool from "./config/database.js";
 import routerEspacios from "./routes/espacios.routes.js";
 import routerTurnos from "./routes/turnos.routes.js";
 import routerUsuarios from "./routes/usuarios.routes.js";
+import routerAuth from "./routes/auth.routes.js";
+import routerReservas from "./routes/reservas.routes.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,6 +14,8 @@ app.use(express.json());
 app.use(routerEspacios);
 app.use(routerTurnos);
 app.use(routerUsuarios);
+app.use(routerAuth);
+app.use(routerReservas);
 
 app.get("/api/health", async (req, res) => {
   try {

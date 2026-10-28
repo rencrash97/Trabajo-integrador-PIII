@@ -55,4 +55,24 @@ export const UsuariosController = {
       });
     }
   },
+
+  async getMe(req, res) {
+    try {
+      const usuario = await UsuariosService.getProfile(req.usuario.id_usuario);
+      // req.usuario.id_usuario lo establece el middleware
+      return res.status(200).json({ usuario });
+    } catch (error) {
+      if (error.status === 404 || error.status === 403) {
+        return res.status(error.status).json({
+          error: error.message,
+        });
+      }
+
+      console.error("Error al obtener el perfil:", error);
+
+      return res.status(500).json({
+        error: "Ocurrió un error interno al obtener el perfil.",
+      });
+    }
+  },
 };

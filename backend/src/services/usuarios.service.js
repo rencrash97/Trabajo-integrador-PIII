@@ -32,4 +32,22 @@ export const UsuariosService = {
       throw error;
     }
   },
+
+  async getProfile(idUsuario) {
+    const usuario = await UsuarioRepository.findById(idUsuario);
+
+    if (!usuario) {
+      const error = new Error("El usuario no existe.");
+      error.status = 404;
+      throw error;
+    }
+
+    if (!usuario.activo) {
+      const error = new Error("La cuenta está desactivada.");
+      error.status = 403;
+      throw error;
+    }
+
+    return usuario;
+  },
 };
