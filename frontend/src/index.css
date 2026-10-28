@@ -4,5 +4,6 @@ html, body, #root {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  background-color: rgb(104, 151, 223);
+  background-color: rgb(59, 83, 114);
+  color: rgb(173, 188, 190);
 }
