@@ -2,18 +2,13 @@ import { Navbar, Container, NavDropdown, Button, Nav } from 'react-bootstrap';
 import './Footer.css';
 
 const Footer = () => {
-
   return (
-
-    <Navbar>
+    <Navbar className="custom-footer">
       <Container>
-
-          <h1>Empresa Copada Srl.</h1>
-          <p>Espacios de Coworking para tu empresa</p>
-
+        <h4>Empresa Copada Srl.</h4>
+        <p>Espacios de Coworking para tu empresa :)</p>
       </Container>
     </Navbar>
-
   );
 }
 

@@ -17,20 +17,20 @@ button {
 }
 
 .btn {
-  background-color: rgb(39, 86, 146);
-  color: var(--bs-primary);
-  border: 1px solid transparent;
-}
-.btn:hover {
-  background-color: rgba(49, 48, 107, 0.445); 
-}
-.btn-auth {
   background-color: rgb(67, 29, 136);
   color: var(--bs-primary);
   border: 1px solid transparent;
 }
-.btn-auth:hover {
+.btn:hover {
   background-color: rgba(250, 198, 247, 0.445); 
+}
+.btn-auth {
+  background-color: rgb(39, 146, 44);
+  color: var(--bs-primary);
+  border: 1px solid transparent;
+}
+.btn-auth:hover {
+  background-color: rgba(49, 48, 107, 0.445);  
 }
 
 

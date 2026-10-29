@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 const NavBar = () => {
 
-  const [isLoggedIn, setIsLoggedIn] = useState(true)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   return (
 
