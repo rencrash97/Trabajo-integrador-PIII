@@ -6,15 +6,14 @@
 
 ## Que falta hacer?
 
-    Backend funcional
     Frontend funcional
     Autorizaciones para cada nivel de usuario
-    Seguridad con jwt
 
-    Basicamente todo :/
 
 ## No olvidar
-
+    repos para backend: npm i morgan express sequelize mysql2 dotenv jsonwebtoken bcrypt
+    repos para frontend: npm i bootstrap react-router jsonwebtoken
+    
     Para el tpi de Metodologia se pide registrar todos los
     movimientos con commits e issues en github. No se olviden
     de agregarlos y aclarar cada cosa que se suba al repo
