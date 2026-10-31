@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
+import { UsuarioRepository } from "../repositories/usuarios.repository.js";
 
-export function authenticateToken(req, res, next) {
+export async function authenticateToken(req, res, next) {
   const authorization = req.headers.authorization;
 
   if (!authorization || !authorization.startsWith("Bearer ")) {
@@ -38,8 +39,25 @@ export function authenticateToken(req, res, next) {
       });
     }
 
+    const usuario = await UsuarioRepository.findStatusById(
+      req.usuario.id_usuario,
+    );
+
+    if (!usuario || !usuario.activo) {
+      return res.status(401).json({
+        error: "La cuenta no existe o está desactivada.",
+      });
+    }
+
+    req.usuario.rol = usuario.rol;
+
     next();
   } catch (error) {
+    if (error.status) {
+      return res.status(error.status).json({
+        error: "Error al verificar el estado de la cuenta.",
+      });
+    }
     return res.status(401).json({
       error: "Token inválido o expirado.",
     });

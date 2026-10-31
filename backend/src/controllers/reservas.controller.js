@@ -110,4 +110,50 @@ export const ReservasController = {
       });
     }
   },
+
+  async getAll(req, res) {
+    try {
+      const reservas = await ReservasService.getAll();
+
+      return res.status(200).json(reservas);
+    } catch (error) {
+      console.error("Error al listar todas las reservas:", error);
+
+      return res.status(500).json({
+        error: "Error interno del servidor.",
+      });
+    }
+  },
+
+  async updateStatus(req, res) {
+    try {
+      const idReserva = Number(req.params.id);
+      const { estado } = req.body;
+
+      if (!Number.isInteger(idReserva) || idReserva <= 0) {
+        return res.status(400).json({
+          error: "El ID debe ser un entero positivo.",
+        });
+      }
+
+      const reserva = await ReservasService.updateStatus(idReserva, estado);
+
+      return res.status(200).json({
+        mensaje: "Estado de reserva actualizado correctamente.",
+        reserva,
+      });
+    } catch (error) {
+      if ([400, 404, 409].includes(error.status)) {
+        return res.status(error.status).json({
+          error: error.message,
+        });
+      }
+
+      console.error("Error al cambiar estado de reserva:", error);
+
+      return res.status(500).json({
+        error: "Error interno del servidor.",
+      });
+    }
+  },
 };

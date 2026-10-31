@@ -75,4 +75,165 @@ export const UsuariosController = {
       });
     }
   },
+
+  async getAll(req, res) {
+    try {
+      const usuarios = await UsuariosService.getAll();
+
+      return res.status(200).json(usuarios);
+    } catch (error) {
+      console.error("Error al listar usuarios:", error);
+
+      return res.status(500).json({
+        error: "Error interno del servidor.",
+      });
+    }
+  },
+
+  async getById(req, res) {
+    try {
+      const idUsuario = Number(req.params.id);
+
+      if (!Number.isInteger(idUsuario) || idUsuario <= 0) {
+        return res.status(400).json({
+          mensaje: "ID de usuario inválido",
+        });
+      }
+
+      const usuario = await UsuariosService.getByIdForAdmin(idUsuario);
+
+      return res.status(200).json(usuario);
+    } catch (error) {
+      return res.status(error.status || 500).json({
+        mensaje: error.status ? error.message : "Error interno del servidor",
+      });
+    }
+  },
+
+  async updateByAdmin(req, res) {
+    try {
+      const idUsuario = Number(req.params.id);
+
+      if (!Number.isInteger(idUsuario) || idUsuario <= 0) {
+        return res.status(400).json({
+          mensaje: "ID de usuario inválido",
+        });
+      }
+
+      const datos = req.body;
+
+      const camposPermitidos = ["nombre", "apellido", "mail"];
+      const camposEnviados = Object.keys(datos);
+
+      // rechazar body vacío
+      if (camposEnviados.length === 0) {
+        return res.status(400).json({
+          mensaje: "Debe enviar al menos un campo para modificar",
+        });
+      }
+
+      // rechazar campos no permitidos
+      const camposInvalidos = camposEnviados.filter(
+        (campo) => !camposPermitidos.includes(campo),
+      );
+
+      if (camposInvalidos.length > 0) {
+        return res.status(400).json({
+          mensaje: `Campos no permitidos: ${camposInvalidos.join(", ")}`,
+        });
+      }
+
+      // validar que los campos enviados sean strings no vacíos
+      for (const campo of camposEnviados) {
+        if (typeof datos[campo] !== "string" || !datos[campo].trim()) {
+          return res.status(400).json({
+            mensaje: `El campo ${campo} debe ser un texto no vacío`,
+          });
+        }
+      }
+
+      const usuario = await UsuariosService.updateByAdmin(idUsuario, datos);
+
+      return res.status(200).json({
+        mensaje: "Usuario actualizado correctamente",
+        usuario,
+      });
+    } catch (error) {
+      return res.status(error.status || 500).json({
+        mensaje: error.status ? error.message : "Error interno del servidor",
+      });
+    }
+  },
+
+  async updateStatus(req, res) {
+    try {
+      const idUsuario = Number(req.params.id);
+
+      if (!Number.isInteger(idUsuario) || idUsuario <= 0) {
+        return res.status(400).json({
+          mensaje: "ID de usuario inválido",
+        });
+      }
+
+      const { activo } = req.body;
+
+      if (typeof activo !== "boolean") {
+        return res.status(400).json({
+          mensaje: "El campo activo debe ser true o false",
+        });
+      }
+
+      const usuario = await UsuariosService.updateStatusByAdmin(
+        idUsuario,
+        activo,
+        req.usuario.id_usuario,
+      );
+
+      return res.status(200).json({
+        mensaje: activo
+          ? "Usuario activado correctamente"
+          : "Usuario desactivado correctamente",
+        usuario,
+      });
+    } catch (error) {
+      return res.status(error.status || 500).json({
+        mensaje: error.status ? error.message : "Error interno del servidor",
+      });
+    }
+  },
+
+  async updateRole(req, res) {
+    try {
+      const idUsuario = Number(req.params.id);
+
+      if (!Number.isInteger(idUsuario) || idUsuario <= 0) {
+        return res.status(400).json({
+          mensaje: "ID de usuario inválido",
+        });
+      }
+
+      const { rol } = req.body;
+
+      if (typeof rol !== "string") {
+        return res.status(400).json({
+          mensaje: "Debe indicar un rol válido",
+        });
+      }
+
+      const usuario = await UsuariosService.updateRoleByAdmin(
+        idUsuario,
+        rol,
+        req.usuario.id_usuario,
+      );
+
+      return res.status(200).json({
+        mensaje: "Rol actualizado correctamente",
+        usuario,
+      });
+    } catch (error) {
+      return res.status(error.status || 500).json({
+        mensaje: error.status ? error.message : "Error interno del servidor",
+      });
+    }
+  },
 };

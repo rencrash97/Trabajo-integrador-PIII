@@ -182,4 +182,59 @@ export const ReservasService = {
 
     return { id_reserva: idReserva, estado: "cancelada" };
   },
+
+  async getAll() {
+    return ReservaRepository.findAll();
+  },
+
+  async updateStatus(idReserva, nuevoEstado) {
+    const estadosPermitidos = ["confirmada", "cancelada"];
+
+    if (!estadosPermitidos.includes(nuevoEstado)) {
+      const error = new Error("El estado debe ser 'confirmada' o 'cancelada'.");
+      error.status = 400;
+      throw error;
+    }
+
+    const reserva = await ReservaRepository.findById(idReserva);
+
+    if (!reserva) {
+      const error = new Error("Reserva no encontrada.");
+      error.status = 404;
+      throw error;
+    }
+
+    const transicionesPermitidas = {
+      pendiente: ["confirmada", "cancelada"],
+      confirmada: ["cancelada"],
+      cancelada: [],
+    };
+
+    if (!transicionesPermitidas[reserva.estado].includes(nuevoEstado)) {
+      const error = new Error(
+        `No se puede cambiar una reserva de '${reserva.estado}' a '${nuevoEstado}'.`,
+      );
+      error.status = 409;
+      throw error;
+    }
+
+    const actualizada = await ReservaRepository.updateStatus(
+      idReserva,
+      reserva.estado,
+      nuevoEstado,
+    );
+
+    if (!actualizada) {
+      const error = new Error(
+        "La reserva fue modificada por otro usuario. Volvé a consultar su estado.",
+      );
+      error.status = 409;
+      throw error;
+    }
+
+    return {
+      id_reserva: idReserva,
+      estado: nuevoEstado,
+    };
+  },
 };
