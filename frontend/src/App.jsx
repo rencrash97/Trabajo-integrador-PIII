@@ -7,6 +7,7 @@ import OfficeCatalog from './components/officeCatalog/OfficeCatalog.jsx';
 import Login from './components/login/Login.jsx';
 import BookingForm from './components/bookingForm/BookingForm.jsx';
 import MyReservations from './components/myReservations/MyReservations.jsx';
+import {PageNotFound} from './components/pageNotFound/PageNotFound.jsx';
 
 function App() {
   return (
