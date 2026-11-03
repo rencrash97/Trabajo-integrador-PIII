@@ -49,7 +49,6 @@ const MyReservations = () => {
 
     return (
         <div style={{ minHeight: "100vh" }} className="bg-light">
-            <Navigation />
             <Container className="py-5">
                 <div className="d-flex justify-content-between align-items-center mb-3">
                     <div>

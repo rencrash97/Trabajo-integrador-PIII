@@ -35,7 +35,6 @@ const OfficeCatalog = () => {
 
     return (
         <div style={{ minHeight: "100vh" }} className="bg-light">
-            <Navigation />
             <Container className="py-5">
                 <div className="text-center mb-5">
                     <h1 className="fw-bold text-dark">Espacios de Trabajo Disponibles</h1>

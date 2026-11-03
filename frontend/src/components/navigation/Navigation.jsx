@@ -1,8 +1,15 @@
-import { Navbar, Nav, Container, Button } from "react-bootstrap";
+
+import { Navbar, Container, NavDropdown, Button, Nav } from 'react-bootstrap';
+import './navigation.css';
 import { Link, useNavigate } from "react-router";
 import { useState, useEffect } from "react";
 
+
+
 const Navigation = () => {
+
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
+
     const navigate = useNavigate();
     const [userEmail, setUserEmail] = useState("");
 
@@ -20,35 +27,49 @@ const Navigation = () => {
     };
 
     return (
-        <Navbar bg="dark" variant="dark" expand="lg" className="px-4 shadow-sm border-bottom border-secondary">
-            <Container fluid>
-                <Navbar.Brand as={Link} to="/" className="fw-bold">
-                    🏢 Alquiler de Oficinas
-                </Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
-                    <Nav className="align-items-center gap-3">
+
+        <Navbar className="navbar-custom py-2 px-4">
+            <Container fluid className="d-flex flex-row align-items-center justify-content-between p-0 w-100">
+
+
+                <div className="d-flex align-items-center gap-2 flex-shrink-0">
+                    <Navbar.Brand as={Link} to="/home" className="fw-bold">
+                        🏢 Alquiler de Oficinas
+                    </Navbar.Brand>
+                        {/* Ver si funciona dentro de los botones
                         <Nav.Link as={Link} to="/">Página Principal</Nav.Link>
                         <Nav.Link as={Link} to="/reservations">Mis Reservas</Nav.Link>
+                        */}
 
-                
-                        {userEmail ? (
-                            <div className="d-flex align-items-center gap-2">
-                                <span className="text-light small">👤 {userEmail}</span>
-                                <Button variant="outline-danger" size="sm" onClick={handleLogout}>
-                                    Cerrar Sesión
-                                </Button>
-                            </div>
-                        ) : (
-                            <Button variant="outline-light" size="sm" onClick={() => navigate("/login")}>
-                                Iniciar Sesión
-                            </Button>
-                        )}
-                    </Nav>
-                </Navbar.Collapse>
+                    <Button>Reservas</Button>
+                    <Button>Catálogo</Button>
+                </div>
+
+                <Nav className="d-flex flex-row align-items-center gap-2 flex-shrink-0">
+                    {isLoggedIn ? (
+                        <div className="d-flex align-items-center gap-2">
+                            <h6 className="mb-0">Hola Usuario X!</h6>
+
+                            <NavDropdown title="⚙️" align="end">
+                                <NavDropdown.Item href="#">Mi Perfil</NavDropdown.Item>
+                                <NavDropdown.Item href="#">Mis Reservas</NavDropdown.Item>
+                                <NavDropdown.Item href="#">Configuración</NavDropdown.Item>
+                                <NavDropdown.Item href="#">Soporte Técnico</NavDropdown.Item>
+                                <NavDropdown.Divider />
+                                <NavDropdown.Item href="#" onClick={handleLogout}>Cerrar Sesión</NavDropdown.Item>
+                            </NavDropdown>
+                        </div>
+                    ) : (
+                        <div className="d-flex align-items-center gap-2 ms-2">
+                            <Button className="btn-auth" onClick={() => navigate("/login")}>Iniciar Sesión</Button>
+                            <Button className="btn-auth">Registrarse</Button>
+                        </div>
+                    )}
+                </Nav>
             </Container>
         </Navbar>
+
     );
-};
+}
 
 export default Navigation;

@@ -1,13 +1,14 @@
+import { Outlet } from "react-router";
 import Footer from "../footer/Footer.jsx";
 import MainPage from "../mainPage/MainPage.jsx";
 import Navigation from "../navigation/Navigation.jsx";
 
 const Dashboard = () => {
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', width: '100%', minHeight: '100vh'}}>
+        <div className="dashboardStyle">
             <Navigation />
-            <div style={{ flex: 1 }}>
-                <MainPage />
+            <div className="main-content-wrapper">
+                <Outlet />
             </div>
             <Footer />
         </div>

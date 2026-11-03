@@ -48,7 +48,6 @@ const BookingForm = () => {
 
     return (
         <div style={{ minHeight: "100vh" }} className="bg-light">
-            <Navigation />
             <Container className="py-5">
                 <Row className="justify-content-center">
                     <Col md={8} lg={6}>
