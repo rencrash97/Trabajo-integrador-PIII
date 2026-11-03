@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import pool from "./config/database.js";
+import cors from "cors";
 import routerEspacios from "./routes/espacios.routes.js";
 import routerTurnos from "./routes/turnos.routes.js";
 import routerUsuarios from "./routes/usuarios.routes.js";
@@ -9,6 +10,12 @@ import routerReservas from "./routes/reservas.routes.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  }),
+);
 
 app.use(express.json());
 app.use(routerEspacios);

@@ -1,0 +1,12 @@
+.dashboardStyle {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.main-content-wrapper {
+    flex: 1;        /* Absorbe todo el espacio disponible entre navbar y footer */
+    width: 100%;
+    position: relative; 
+}

@@ -1,0 +1,41 @@
+diff --git a/frontend/src/App.jsx b/frontend/src/App.jsx
+index 7a52b71..0803307 100644
+--- a/frontend/src/App.jsx
++++ b/frontend/src/App.jsx
+@@ -1,12 +1,26 @@
+ import './App.css'
++import { BrowserRouter, Routes, Route } from "react-router";
++import OfficeCatalog from "./components/OfficeCatalog";
++import Login from "./components/Login";
++import BookingForm from "./components/BookingForm";
++import MyReservations from "./components/MyReservations";
+ 
+-function App() {
+-
++export default function App() {
+   return (
+-    <>
+-    
+-    </>
+-  )
+-}
+-
+-export default App
++    <BrowserRouter>
++      <Routes>
++        {/* Ruta principal / Catálogo */}
++        <Route path="/" element={<OfficeCatalog />} />
++        
++        {/* Ruta de Login */}
++        <Route path="/login" element={<Login />} />
++        
++        {/* Ruta para el formulario de reserva */}
++        <Route path="/book" element={<BookingForm />} />
++        
++        {/* Ruta para las reservas del usuario */}
++        <Route path="/reservations" element={<MyReservations />} />
++      </Routes>
++    </BrowserRouter>
++  );
++}
+\ No newline at end of file
