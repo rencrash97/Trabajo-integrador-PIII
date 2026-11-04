@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Container, Row, Col, Card, Form, Button, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router";
+import { errorToast, successToast } from "../../general/toast.js";
 
 
 const Login = ({ onLoginSuccess }) => {
@@ -9,22 +10,50 @@ const Login = ({ onLoginSuccess }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const [error, setError] = useState(null);
+    const [error, setError] = useState({
+        email: false,
+        password: false,
+    });
+
+    const emailRef = useRef(null);
+    const passwordRef = useRef(null);
+
+
+    const handleEmailChange = (event) => {
+        setEmail(event.target.value);
+        setError({ ...error, email: false });
+    };
+
+    const handlePasswordChange = (event) => {
+        setPassword(event.target.value);
+        setError({ ...error, password: false });
+    };
+
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        setError(null);
+
+        if (!emailRef.current.value.length) {
+            setError({ ...error, email: true });
+            errorToast("¡Email vacío!");
+            emailRef.current.focus();
+            console.log("Error en mail");
+            return;
+        }
+
+        if (!password.length || password.length < 7) {
+            setError({ ...error, password: true });
+            errorToast("¡Password vacío o demasiado corto!");
+            passwordRef.current.focus();
+            console.log("Error en contra");
+            return;
+        }
 
         try {
             const response = await fetch("http://localhost:3000/api/auth/login", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    mail: email, // mirar por las dudas el backend
-                    password: password,
-                }),
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ mail: email, password: password }),
             });
 
             const data = await response.json();
@@ -33,16 +62,15 @@ const Login = ({ onLoginSuccess }) => {
                 throw new Error(data.message || "Credenciales incorrectas");
             }
 
-            localStorage.setItem("ADO_token", data.token);
-            localStorage.setItem("ADO_user", JSON.stringify(data.usuario));
+            login(data.usuario, data.token);
 
-            onLoginSuccess();
-
-            alert(`¡Bienvenido/a, ${data.usuario.nombre}!`);
+            // Reemplazamos el alert nativo por tu successToast
+            successToast(`¡Bienvenido/a, ${data.usuario.nombre}!`);
             navigate("/");
 
         } catch (err) {
-            setError(err.message);
+            // Reemplazamos el estado de error por tu errorToast
+            errorToast(err.message);
         } finally {
             setLoading(false);
         }
@@ -65,8 +93,10 @@ const Login = ({ onLoginSuccess }) => {
                                             type="email"
                                             placeholder="ejemplo@correo.com"
                                             value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
+                                            onChange={handleEmailChange}
                                             required
+                                            ref={emailRef}
+                                            className={error.email ? "border border-danger" : ""}
                                         />
                                     </Form.Group>
 
@@ -76,8 +106,10 @@ const Login = ({ onLoginSuccess }) => {
                                             type="password"
                                             placeholder="Ingresá tu contraseña"
                                             value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
+                                            onChange={handlePasswordChange}
                                             required
+                                            ref={passwordRef}
+                                            className={error.password ? "border border-danger" : ""}
                                         />
                                     </Form.Group>
 
