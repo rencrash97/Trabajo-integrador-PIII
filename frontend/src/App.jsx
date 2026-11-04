@@ -29,7 +29,7 @@ function App() {
           </Protected>}>
 
           <Route path="/catalog" element={<OfficeCatalog />} />
-          <Route path="/booking" element={<BookingForm />} />
+          <Route path="/booking/:idEspacio" element={<BookingForm />} />
           <Route path="/reservations" element={<MyReservations />} />
         </Route>
 

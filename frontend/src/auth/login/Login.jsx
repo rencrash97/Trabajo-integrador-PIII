@@ -71,6 +71,8 @@ const Login = () => {
         };
     };
 
+    const navigateLogin = () => {navigate("/")};
+
     return (
         <div style={{ minHeight: "100vh" }} className="bg-light">
             <Container className="py-5">
@@ -112,7 +114,7 @@ const Login = () => {
                                     <div className="text-center">
                                         <small className="text-muted">
                                             ¿No tenés cuenta?
-                                            <span className="text-primary" onClick={() => navigate("/")}> Volver al inicio</span>
+                                            <span className="text-primary" onClick={navigateLogin}> Volver al inicio</span>
                                         </small>
                                     </div>
                                 </Form>

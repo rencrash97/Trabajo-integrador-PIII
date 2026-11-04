@@ -1,37 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useNavigate } from "react-router";
-import Navigation from "../navigation/Navigation";
+import { errorToast } from "../../general/toast.js";
 
 const OfficeCatalog = () => {
+
     const navigate = useNavigate();
 
-    const [offices] = useState([
-        {
-            id: 1,
-            title: "Oficina Ejecutiva Central",
-            location: "Rosario Centro",
-            capacity: 4,
-            price: 15000,
-            summary: "Espacio moderno equipado con escritorios ergonómicos, Wi-Fi de alta velocidad y aire acondicionado."
-        },
-        {
-            id: 2,
-            title: "Sala de Reuniones Creativa",
-            location: "Pichincha",
-            capacity: 10,
-            price: 28000,
-            summary: "Ideal para reuniones de equipo y presentaciones con proyector LED y pizarra acrílica."
-        },
-        {
-            id: 3,
-            title: "Puesto Coworking Individual",
-            location: "Pellegrini",
-            capacity: 1,
-            price: 5000,
-            summary: "Escritorio dedicado en zona compartida con acceso a cafetería y áreas de descanso."
-        }
-    ]);
+    const [offices, setOffices] = useState([]);
+
+    useEffect(() => {
+
+        const fetchOffices = async () => {
+            try {
+                const response = await fetch("http://localhost:3000/api/espacios");
+
+                if (!response.ok) {
+                    throw new Error("No se pudo conectar con el servidor.");
+                }
+
+                const data = await response.json();
+                setOffices(data);
+
+            } catch (err) {
+                errorToast(`Hubo un problema al cargar los espacios: ${err.message}`);
+            }
+        };
+
+        fetchOffices();
+    }, []);
+
+    const navigateReserve = (office) => {
+        navigate(`/booking/${office.id_espacio}`)
+    };
 
     return (
         <div style={{ minHeight: "100vh" }} className="bg-light">
@@ -43,22 +44,32 @@ const OfficeCatalog = () => {
 
                 <Row className="g-4">
                     {offices.map((office) => (
-                        <Col key={office.id} md={4}>
+                        <Col key={office.id_espacio} md={4}>
                             <Card className="shadow-sm border-0 h-100">
                                 <Card.Body className="d-flex flex-column p-4">
-                                    <Card.Title className="fw-bold text-primary fs-4">{office.title}</Card.Title>
-                                    <Card.Subtitle className="mb-3 text-muted">📍 {office.location}</Card.Subtitle>
-                                    <Card.Text className="text-secondary mb-4">{office.summary}</Card.Text>
-                                    
+                                    <Card.Title className="fw-bold text-primary fs-4">
+                                        {office.nombre}
+                                    </Card.Title>
+                                    <Card.Subtitle className="mb-3 text-muted">
+                                        📍 {office.ubicacion}
+                                    </Card.Subtitle>
+                                    <Card.Text className="text-secondary mb-4">
+                                        {office.descripcion}
+                                    </Card.Text>
+
                                     <div className="mt-auto">
                                         <div className="d-flex justify-content-between align-items-center mb-3">
-                                            <span className="text-muted fw-semibold">👥 Capacidad: {office.capacity} pers.</span>
-                                            <span className="fw-bold text-success fs-5">${office.price} /h</span>
+                                            <span className="text-muted fw-semibold">
+                                                👥 Capacidad: {office.capacidad} pers.
+                                            </span>
+                                            <span className="fw-bold text-success fs-5">
+                                                ${office.precio_por_turno} /h.
+                                            </span>
                                         </div>
-                                        <Button 
-                                            variant="primary" 
+                                        <Button
+                                            variant="primary"
                                             className="w-100 fw-bold py-2"
-                                            onClick={() => navigate("/booking", { state: { name: office.title, price: office.price } })}
+                                            onClick={() => navigateReserve(office)}
                                         >
                                             Reservar Oficina
                                         </Button>
@@ -67,6 +78,12 @@ const OfficeCatalog = () => {
                             </Card>
                         </Col>
                     ))}
+
+                    {offices.length === 0 && (
+                        <div className="text-center my-5 w-100">
+                            <p className="text-muted fs-5">No hay espacios de trabajo disponibles en este momento.</p>
+                        </div>
+                    )}
                 </Row>
             </Container>
         </div>
