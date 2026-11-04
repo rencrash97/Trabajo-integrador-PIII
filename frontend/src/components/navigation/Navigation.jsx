@@ -25,6 +25,7 @@ const Navigation = () => {
         setUserEmail("");
         navigate("/");
     };
+    
 
     return (
 
@@ -33,7 +34,7 @@ const Navigation = () => {
 
 
                 <div className="d-flex align-items-center gap-2 flex-shrink-0">
-                    <Navbar.Brand as={Link} to="/home" className="fw-bold">
+                    <Navbar.Brand as={Link} to="/" className="fw-bold">
                         🏢 Alquiler de Oficinas
                     </Navbar.Brand>
                         {/* Ver si funciona dentro de los botones
