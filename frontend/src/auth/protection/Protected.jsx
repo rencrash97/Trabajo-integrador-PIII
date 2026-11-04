@@ -1,9 +1,13 @@
-import { Navigate } from "react-router"
+import { useContext } from "react";
+import { Navigate } from "react-router";
+import { JsonAuthContext } from "../../general/JsonAuthContext.jsx";
 
-export const Protected = ({isSignedIn, children}) => {
-  if(!isSignedIn) {
-    return <Navigate to="/login" replace />
+export const Protected = ({ children }) => {
+  const { isSignedIn } = useContext(JsonAuthContext);
+
+  if (!isSignedIn) {
+    return <Navigate to="/login" replace />;
   }
-    return children;
-    
-}
+
+  return children;
+};

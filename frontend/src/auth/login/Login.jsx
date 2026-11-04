@@ -1,11 +1,13 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
 import { Container, Row, Col, Card, Form, Button, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router";
-import { errorToast, successToast } from "../../general/toast.js";
+import { errorToast } from "../../general/toast.js";
+import { JsonAuthContext } from "../../general/JsonAuthContext.jsx";
 
 
-const Login = ({ onLoginSuccess }) => {
+const Login = () => {
     const navigate = useNavigate();
+    const { localLogin } = useContext(JsonAuthContext);
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -17,7 +19,6 @@ const Login = ({ onLoginSuccess }) => {
 
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
-
 
     const handleEmailChange = (event) => {
         setEmail(event.target.value);
@@ -62,18 +63,12 @@ const Login = ({ onLoginSuccess }) => {
                 throw new Error(data.message || "Credenciales incorrectas");
             }
 
-            login(data.usuario, data.token);
-
-            // Reemplazamos el alert nativo por tu successToast
-            successToast(`¡Bienvenido/a, ${data.usuario.nombre}!`);
+            localLogin(data.usuario, data.token);
             navigate("/");
 
         } catch (err) {
-            // Reemplazamos el estado de error por tu errorToast
             errorToast(err.message);
-        } finally {
-            setLoading(false);
-        }
+        };
     };
 
     return (
@@ -94,7 +89,6 @@ const Login = ({ onLoginSuccess }) => {
                                             placeholder="ejemplo@correo.com"
                                             value={email}
                                             onChange={handleEmailChange}
-                                            required
                                             ref={emailRef}
                                             className={error.email ? "border border-danger" : ""}
                                         />

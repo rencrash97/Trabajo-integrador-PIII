@@ -49,7 +49,7 @@ const Navigation = () => {
                 <Nav className="d-flex flex-row align-items-center gap-2 flex-shrink-0">
                     {isLoggedIn ? (
                         <div className="d-flex align-items-center gap-2">
-                            <h6 className="mb-0">Hola Usuario X!</h6>
+                            <h6 className="mb-0">{/*Arreglar Mensaje*/(`¡Bienvenido/a, ${data.usuario.nombre}!`)}</h6>
 
                             <NavDropdown title="⚙️" align="end">
                                 <NavDropdown.Item href="#">Mi Perfil</NavDropdown.Item>
