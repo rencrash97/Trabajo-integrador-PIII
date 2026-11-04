@@ -8,20 +8,9 @@ import Login from './auth/login/Login.jsx';
 import BookingForm from './components/bookingForm/BookingForm.jsx';
 import MyReservations from './components/myReservations/MyReservations.jsx';
 import { PageNotFound } from './components/pageNotFound/PageNotFound.jsx';
-import { useState } from 'react';
 import { Protected } from './auth/protection/Protected.jsx';
 
 function App() {
-
-  // Inicializa en true si ya hay un token en el localStorage
-  const [isSignedIn, setIsSignedIn] = useState(() => {
-    return !!localStorage.getItem("ADO_token");
-  });
-
-  const handleLogIn = () => {
-     setIsSignedIn(true)
-  }
-
 
   return (
     <BrowserRouter>
@@ -29,13 +18,13 @@ function App() {
         {/*rutas publicas*/}
         <Route path="/" element={<Dashboard />}>
           <Route index element={<MainPage />} />
-          <Route path="/login" element={<Login onLoginSuccess={handleLogIn} />} />
+          <Route path="/login" element={<Login />} />
         </Route>
         <Route path='*' element={<PageNotFound />} />
 
         {/*rutas privadas*/}
         <Route path="/" element={
-          <Protected isSignedIn={isSignedIn}>
+          <Protected>
             <Dashboard />
           </Protected>}>
 

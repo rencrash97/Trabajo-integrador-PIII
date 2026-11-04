@@ -2,30 +2,24 @@
 import { Navbar, Container, NavDropdown, Button, Nav } from 'react-bootstrap';
 import './navigation.css';
 import { Link, useNavigate } from "react-router";
-import { useState, useEffect } from "react";
+import { useContext } from "react";
+import { JsonAuthContext } from '../../general/JsonAuthContext.jsx';
 
 
 
 const Navigation = () => {
 
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
-
     const navigate = useNavigate();
-    const [userEmail, setUserEmail] = useState("");
-
-    useEffect(() => {
-        const savedUser = localStorage.getItem("userEmail");
-        if (savedUser) {
-            setUserEmail(savedUser);
-        }
-    }, []);
+    const { isSignedIn, localLogout, user } = useContext(JsonAuthContext);
 
     const handleLogout = () => {
-        localStorage.removeItem("userEmail");
-        setUserEmail("");
+        localLogout();
         navigate("/");
     };
-    
+
+    const navigateLogin = () => {
+        navigate("/login");
+    };
 
     return (
 
@@ -37,24 +31,17 @@ const Navigation = () => {
                     <Navbar.Brand as={Link} to="/" className="fw-bold">
                         🏢 Alquiler de Oficinas
                     </Navbar.Brand>
-                        {/* Ver si funciona dentro de los botones
-                        <Nav.Link as={Link} to="/">Página Principal</Nav.Link>
-                        <Nav.Link as={Link} to="/reservations">Mis Reservas</Nav.Link>
-                        */}
-
-                    <Button>Reservas</Button>
-                    <Button>Catálogo</Button>
                 </div>
 
                 <Nav className="d-flex flex-row align-items-center gap-2 flex-shrink-0">
-                    {isLoggedIn ? (
+                    {isSignedIn ? (
                         <div className="d-flex align-items-center gap-2">
-                            <h6 className="mb-0">{/*Arreglar Mensaje*/(`¡Bienvenido/a, ${data.usuario.nombre}!`)}</h6>
+                            <h6 className="mb-0">{`¡Bienvenido/a, ${user.nombre} ${user.apellido}!`}</h6>
 
                             <NavDropdown title="⚙️" align="end">
                                 <NavDropdown.Item href="#">Mi Perfil</NavDropdown.Item>
-                                <NavDropdown.Item href="#">Mis Reservas</NavDropdown.Item>
-                                <NavDropdown.Item href="#">Configuración</NavDropdown.Item>
+                                <NavDropdown.Item href="/reservations">Mis Reservas</NavDropdown.Item>
+                                <NavDropdown.Item href="/catalog">Catálogo</NavDropdown.Item>
                                 <NavDropdown.Item href="#">Soporte Técnico</NavDropdown.Item>
                                 <NavDropdown.Divider />
                                 <NavDropdown.Item href="#" onClick={handleLogout}>Cerrar Sesión</NavDropdown.Item>
@@ -62,7 +49,7 @@ const Navigation = () => {
                         </div>
                     ) : (
                         <div className="d-flex align-items-center gap-2 ms-2">
-                            <Button className="btn-auth" onClick={() => navigate("/login")}>Iniciar Sesión</Button>
+                            <Button className="btn-auth" onClick={navigateLogin}>Iniciar Sesión</Button>
                             <Button className="btn-auth">Registrarse</Button>
                         </div>
                     )}

@@ -1,11 +1,11 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useState } from "react";
 
 export const JsonAuthContext = createContext();
 
 export const JsonAuthProvider = ({ children }) => {
 
     const [token, setToken] = useState(() => {
-        localStorage.getItem("ADO_token")
+        return localStorage.getItem("ADO_token");
     });     // habria que hacer que se venza después de un tiempo, no?
 
     const [user, setUser] = useState(() => {
@@ -28,11 +28,10 @@ export const JsonAuthProvider = ({ children }) => {
         setUser(null);
     };
 
-    // Helper rápido para saber si está firmado ??????????
-    const isSignedIn = !!token;
+    const isSignedIn = !!token; //para verificar logueo
 
-    // Helper rápido para obtener el rol directamente ??????????
-    const userRole = user?.rol || null;
+
+    const userRole = user?.rol || null; // devuelve rol
 
     return (
         <JsonAuthContext.Provider value={{ token, user, userRole, isSignedIn, localLogin, localLogout }}>

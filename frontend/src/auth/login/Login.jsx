@@ -64,7 +64,7 @@ const Login = () => {
             }
 
             localLogin(data.usuario, data.token);
-            navigate("/");
+            navigate("/reservations"); //cuando haya un perfil, cambiar navegacion a perfil principal
 
         } catch (err) {
             errorToast(err.message);
