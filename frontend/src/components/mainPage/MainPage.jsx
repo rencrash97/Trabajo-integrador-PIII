@@ -9,14 +9,6 @@ const MainPage = () => {
       <div className="text-center mb-5">
         <h1 className="fw-bold text-dark">Espacios de Coworking para tu empresa</h1>
         <p className="text-muted fs-5">Encontrá el lugar ideal para trabajar de forma cómoda y flexible.</p>
-        <div className="d-flex justify-content-center gap-2 mt-4">
-          <Button variant="outline-primary" onClick={() => navigate("/catalog")}>
-            Ver Catálogo
-          </Button>
-          <Button variant="outline-primary" onClick={() => navigate("/login")}>
-            Iniciar Sesión
-          </Button>
-        </div>
       </div>
 
       <main>

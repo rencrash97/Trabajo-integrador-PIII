@@ -1,8 +1,8 @@
 import { useState, useRef, useContext } from "react";
 import { Container, Row, Col, Card, Form, Button, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router";
-import { errorToast } from "../../general/toast.js";
-import { JsonAuthContext } from "../../general/JsonAuthContext.jsx";
+import { errorToast } from "../../../general/toast.js";
+import { JsonAuthContext } from "../../../general/JsonAuthContext.jsx";
 
 
 const Login = () => {
@@ -38,15 +38,13 @@ const Login = () => {
             setError({ ...error, email: true });
             errorToast("¡Email vacío!");
             emailRef.current.focus();
-            console.log("Error en mail");
             return;
         }
 
-        if (!password.length || password.length < 7) {
+        if (!password.length || password.length < 8) {
             setError({ ...error, password: true });
             errorToast("¡Password vacío o demasiado corto!");
             passwordRef.current.focus();
-            console.log("Error en contra");
             return;
         }
 
@@ -71,7 +69,7 @@ const Login = () => {
         };
     };
 
-    const navigateLogin = () => {navigate("/")};
+    const navigateLogin = () => { navigate("/") };
 
     return (
         <div style={{ minHeight: "100vh" }} className="bg-light">
@@ -114,7 +112,7 @@ const Login = () => {
                                     <div className="text-center">
                                         <small className="text-muted">
                                             ¿No tenés cuenta?
-                                            <span className="text-primary" onClick={navigateLogin}> Volver al inicio</span>
+                                            <span className="text-primary" style={{ cursor: "pointer" }} onClick={() => navigate("/register")}> Registrate!</span>
                                         </small>
                                     </div>
                                 </Form>
