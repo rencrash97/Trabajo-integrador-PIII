@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router";
 import { errorToast, successToast } from "../../general/toast.js";
 import { JsonAuthContext } from "../../general/JsonAuthContext.jsx";
 
-const BookingForm = () => { //agregar mensaje en reserva de pendiente. Hacer validaciones de fechas y hora de turno.
+const BookingForm = () => {
 
     const navigate = useNavigate();
     const { idEspacio } = useParams();
@@ -14,6 +14,16 @@ const BookingForm = () => { //agregar mensaje en reserva de pendiente. Hacer val
     const [turnos, setTurnos] = useState([]);
     const [idTurnoSelect, setIdTurnoSelect] = useState("");
     const [date, setDate] = useState("");
+
+    const mañana = new Date();
+    mañana.setDate(mañana.getDate() +1); //lo dejé en mas uno para simplificar las validaciones de turnos
+    const año = mañana.getFullYear();
+    const mes = String(mañana.getMonth() + 1).padStart(2, '0');
+    const dia = String(mañana.getDate()).padStart(2, '0');
+    const fechaMinima = `${año}-${mes}-${dia}`;
+
+    console.log(mañana);
+
 
     useEffect(() => {
         const fetchOficina = async () => {
@@ -99,6 +109,7 @@ const BookingForm = () => { //agregar mensaje en reserva de pendiente. Hacer val
                                             type="date"
                                             value={date}
                                             onChange={(e) => setDate(e.target.value)}
+                                            min={fechaMinima}
                                             required
                                         />
                                     </Form.Group>
