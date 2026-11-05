@@ -8,7 +8,6 @@
 
     Frontend:
         Autorizaciones para cada nivel de usuario
-        Registro
         perfil de usuarios/admins/superadmins
 
     Backend:
