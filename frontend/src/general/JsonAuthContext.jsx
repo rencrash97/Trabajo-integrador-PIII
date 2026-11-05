@@ -17,6 +17,7 @@ export const JsonAuthProvider = ({ children }) => {
     const localLogin = (localUserData, localToken) => {
         localStorage.setItem("ADO_token", localToken);
         localStorage.setItem("ADO_user", JSON.stringify(localUserData));
+        console.log(localUserData)
         setToken(localToken);
         setUser(localUserData);
     };

@@ -1,51 +1,73 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Container, Table, Button, Badge } from "react-bootstrap";
 import { useNavigate } from "react-router";
-import Navigation from "../navigation/Navigation";
+import { JsonAuthContext } from "../../general/JsonAuthContext.jsx";
+import { errorToast, successToast } from "../../general/toast.js";
+import AreYouReallyReallySureYouWantToDoThatModal from "./AreYouSureModal.jsx";
 
-const MyReservations = () => {
+const MyReservations = () => { //agregar mensaje en reserva de pendiente
     const navigate = useNavigate();
-    const [userEmail, setUserEmail] = useState("invitado@correo.com");
+    const { token, user } = useContext(JsonAuthContext);
+
     const [reservations, setReservations] = useState([]);
+    const [modalShow, setModalShow] = useState(false);
+    const [selectedReservation, setSelectedReservation] = useState(null);
 
-    useEffect(() => {
-        const savedUser = localStorage.getItem("userEmail");
-        if (savedUser) {
-            setUserEmail(savedUser);
-        }
-
-        const savedReservations = localStorage.getItem("myReservations");
-        if (savedReservations) {
-            setReservations(JSON.parse(savedReservations));
-        } else {
-            const initialReservations = [
-                {
-                    id: 1,
-                    office: "Oficina Ejecutiva Central",
-                    date: "2026-11-05",
-                    time: "10:00 hs",
-                    status: "Confirmada",
-                    total: "$30.000"
-                },
-                {
-                    id: 2,
-                    office: "Sala de Reuniones Creativa",
-                    date: "2026-11-10",
-                    time: "14:00 hs",
-                    status: "Confirmada",
-                    total: "$56.000"
+    const fetchMyReservations = async () => {
+        try {
+            const response = await fetch("http://localhost:3000/api/reservas/mias", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
                 }
-            ];
-            setReservations(initialReservations);
-            localStorage.setItem("myReservations", JSON.stringify(initialReservations));
-        }
-    }, []);
+            });
 
-    const handleCancel = (id) => {
-        const updatedReservations = reservations.filter(r => r.id !== id);
-        setReservations(updatedReservations);
-        localStorage.setItem("myReservations", JSON.stringify(updatedReservations));
+            const data = await response.json();
+            
+            if (!response.ok) throw new Error(data.error || "No se pudieron cargar tus reservas.");
+            
+            setReservations(data.reservas);
+
+        } catch (err) {
+            errorToast(err.message || "Error al conectar con el servidor.");
+        }
+        
     };
+    
+    useEffect(() => { 
+        if (token) fetchMyReservations();
+    }, []);//creo que no es necesario agregar el token
+
+    const handleOpenCancelModal = (reservation) => {
+        setSelectedReservation(reservation);
+        setModalShow(true);
+    };
+
+    const handleConfirmCancel = async () => {
+        if (!selectedReservation) return;
+
+        try {
+            const response = await fetch(`http://localhost:3000/api/reservas/${selectedReservation.id_reserva}/cancelar`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || "No se pudo cancelar la reserva.");
+
+            successToast(data.mensaje || "Reserva cancelada correctamente.");
+            setModalShow(false);
+            fetchMyReservations();
+
+        } catch (err) {
+            errorToast(`Error al cancelar: ${err.message}`);
+        }
+    };
+
 
     return (
         <div style={{ minHeight: "100vh" }} className="bg-light">
@@ -53,9 +75,11 @@ const MyReservations = () => {
                 <div className="d-flex justify-content-between align-items-center mb-3">
                     <div>
                         <h2 className="fw-bold text-dark mb-1">Mis Reservas</h2>
-                        <p className="text-muted small mb-0">Mostrando reservas para: <strong>{userEmail}</strong></p>
+                        <p className="text-muted small mb-0">
+                            Mostrando reservas para: <strong>{user.apellido}, {user.nombre}</strong>
+                        </p>
                     </div>
-                    <Button variant="primary" onClick={() => navigate("/")}>
+                    <Button variant="primary" onClick={() => navigate("/catalog")}>
                         + Nueva Reserva
                     </Button>
                 </div>
@@ -66,7 +90,6 @@ const MyReservations = () => {
                             <tr>
                                 <th>#</th>
                                 <th>Oficina</th>
-                                <th>Responsable</th>
                                 <th>Fecha</th>
                                 <th>Horario</th>
                                 <th>Estado</th>
@@ -76,24 +99,23 @@ const MyReservations = () => {
                         </thead>
                         <tbody>
                             {reservations.length > 0 ? (
-                                reservations.map((res, index) => (
-                                    <tr key={res.id}>
+                                reservations.map((r, index) => (
+                                    <tr  key={r.id_reserva}>
                                         <td>{index + 1}</td>
-                                        <td className="fw-bold text-dark">{res.office}</td>
-                                        <td><span className="text-muted small">{userEmail}</span></td>
-                                        <td>{res.date}</td>
-                                        <td>{res.time}</td>
+                                        <td className="fw-bold text-dark">{r.espacio_nombre}</td>
+                                        <td>{r.fecha.slice(0, 10)}</td>
+                                        <td>{r.turno_nombre} ({r.hora_inicio.slice(0, 5)} - {r.hora_fin.slice(0, 5)} hs.)</td>
                                         <td>
-                                            <Badge bg={res.status === "Confirmada" ? "success" : "warning"}>
-                                                {res.status}
+                                            <Badge bg={r.estado.toLowerCase() === "confirmada" ? "success" : "warning"}>
+                                                {r.estado}
                                             </Badge>
                                         </td>
-                                        <td className="text-success fw-bold">{res.total}</td>
+                                        <td className="text-success fw-bold">${parseFloat(r.precio).toLocaleString("es-AR")}</td>
                                         <td>
-                                            <Button 
-                                                variant="outline-danger" 
+                                            <Button
+                                                variant="outline-danger"
                                                 size="sm"
-                                                onClick={() => handleCancel(res.id)}
+                                                onClick={() => handleOpenCancelModal(r)}
                                             >
                                                 Cancelar
                                             </Button>
@@ -103,7 +125,7 @@ const MyReservations = () => {
                             ) : (
                                 <tr>
                                     <td colSpan="8" className="text-center text-muted py-4">
-                                        No tenés reservas registradas actualmente.
+                                        No tienes reservas registradas actualmente.
                                     </td>
                                 </tr>
                             )}
@@ -111,6 +133,14 @@ const MyReservations = () => {
                     </Table>
                 </div>
             </Container>
+
+            <AreYouReallyReallySureYouWantToDoThatModal
+                show={modalShow}
+                onHide={() => setModalShow(false)}
+                onConfirm={handleConfirmCancel}
+                resName={selectedReservation?.espacio_nombre}
+                resDate={selectedReservation?.fecha.slice(0, 10)}
+            />
         </div>
     );
 };
