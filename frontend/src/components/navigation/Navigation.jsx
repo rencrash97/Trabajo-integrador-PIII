@@ -13,12 +13,16 @@ const Navigation = () => {
     const { isSignedIn, localLogout, user } = useContext(JsonAuthContext);
 
     const handleLogout = () => {
-        localLogout();
         navigate("/");
-    };
+        setTimeout(() => localLogout(),10); //timeout porque no le da tiempo a navigate a moverse de directorio
+        };
 
     const navigateLogin = () => {
         navigate("/login");
+    };
+
+    const navigateRegister = () => {
+        navigate("/register");
     };
 
     return (
@@ -50,7 +54,7 @@ const Navigation = () => {
                     ) : (
                         <div className="d-flex align-items-center gap-2 ms-2">
                             <Button className="btn-auth" onClick={navigateLogin}>Iniciar Sesión</Button>
-                            <Button className="btn-auth">Registrarse</Button>
+                            <Button className="btn-auth" onClick={navigateRegister}>Registrarse</Button>
                         </div>
                     )}
                 </Nav>

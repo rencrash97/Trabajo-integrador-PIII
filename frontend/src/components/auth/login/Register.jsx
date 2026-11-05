@@ -18,30 +18,59 @@ const Register = () => {
         password: false,
     });
 
+    const nombreRef = useRef(null);
+    const apellidoRef = useRef(null);
+    const emailRef = useRef(null);
+    const passwordRef = useRef(null);
+
+    const handleNombreChange = (e) => {
+        setNombre(e.target.value);
+        setError({ ...error, nombre: false });
+    };
+
+    const handleApellidoChange = (e) => {
+        setApellido(e.target.value);
+        setError({ ...error, apellido: false });
+    };
+
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value);
+        setError({ ...error, email: false });
+    };
+
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
+        setError({ ...error, password: false });
+    };
+
     const handleRegister = async (e) => {
         e.preventDefault();
 
         if (!nombre.trim().length) {
             setError({ ...error, nombre: true });
             errorToast("Ingresa tu nombre!");
+            nombreRef.current.focus();
             return;
         }
 
         if (!apellido.trim().length) {
             setError({ ...error, apellido: true });
             errorToast("El apellido no puede estar vacío!");
+            apellidoRef.current.focus();
             return;
         }
 
         if (!emailRef.current.value.length) {
             setError({ ...error, email: true });
             errorToast("Email vacío!");
+            emailRef.current.focus();
             return;
         }
 
         if (!password.length || password.length < 8) {
             setError({ ...error, password: true });
             errorToast("La contraseña es demasiado corta!");
+            passwordRef.current.focus();
             return;
         }
 
@@ -60,10 +89,10 @@ const Register = () => {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.message || data.error || "No se pudo crear la cuenta");
+                throw new Error(data.message || data.error || "No se pudo crear la cuenta :(");
             }
 
-            successToast(data.mensaje || "¡Cuenta creada con éxito! Ya podés iniciar sesión.");
+            successToast(data.mensaje || "¡Cuenta creada con éxito! Ya podés iniciar sesión :)");
             navigate("/login");
 
         } catch (err) {
@@ -89,6 +118,8 @@ const Register = () => {
                                                     type="text"
                                                     placeholder="Cosme"
                                                     value={nombre}
+                                                    onChange={handleNombreChange}
+                                                    ref={nombreRef}
                                                     className={error.nombre ? "border border-danger" : ""}
                                                 />
                                             </Form.Group>
@@ -100,6 +131,8 @@ const Register = () => {
                                                     type="text"
                                                     placeholder="Fulanito"
                                                     value={apellido}
+                                                    onChange={handleApellidoChange}
+                                                    ref={apellidoRef}
                                                     className={error.apellido ? "border border-danger" : ""}
                                                 />
                                             </Form.Group>
@@ -112,6 +145,8 @@ const Register = () => {
                                             type="email"
                                             placeholder="ejemplo@correo.com"
                                             value={email}
+                                            onChange={handleEmailChange}
+                                            ref={emailRef}
                                             className={error.email ? "border border-danger" : ""}
                                         />
                                     </Form.Group>
@@ -122,6 +157,8 @@ const Register = () => {
                                             type="password"
                                             placeholder="Mínimo 8 caracteres"
                                             value={password}
+                                            onChange={handlePasswordChange}
+                                            ref={passwordRef}
                                             className={error.password ? "border border-danger" : ""}
                                         />
                                     </Form.Group>
