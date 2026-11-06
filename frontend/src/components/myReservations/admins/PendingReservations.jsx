@@ -1,0 +1,182 @@
+import { useState, useEffect, useContext } from "react";
+import { Container, Table, Button, Badge, Card, Row, Col } from "react-bootstrap";
+import { errorToast, successToast } from "../../../general/toast.js";
+import { JsonAuthContext } from "../../../general/JsonAuthContext.jsx";
+import { apiRequest } from "../../../general/api.js";
+import AreYouReallyReallySureYouWantToDoThatModal from "../AreYouSureModal.jsx";
+import "./PendingReservations.css";
+
+const PendingReservations = () => {
+
+    const { token } = useContext(JsonAuthContext);
+    const [reservations, setReservations] = useState([]);
+    const [showCancelModal, setShowCancelModal] = useState(false);
+    const [selectedReservation, setSelectedReservation] = useState(null);
+
+    const MESES_ABREVIADOS = [
+        "ene", "feb", "mar", "abr", "may", "jun",
+        "jul", "ago", "sep", "oct", "nov", "dic",
+    ];
+
+    const formatReservationDate = (date) => {
+        const [year, month, day] = date.slice(0, 10).split("-");
+        return `${Number(day)} ${MESES_ABREVIADOS[Number(month) - 1]} ${year}`;
+    };
+
+    const formatHour = (hour) => String(hour).slice(0, 5);
+
+    const fetchAllReservations = (token) => apiRequest("/api/admin/reservas", { token });
+
+    const reload = () => {
+        if (!token) return;
+        fetchAllReservations(token)
+            .then((data) => setReservations(data || []))
+            .catch((err) => errorToast(err.message || "Error al conectar con el servidor."));
+    };
+
+    useEffect(() => {
+        reload();
+    }, [token]);
+
+    const handleUpdateStatus = async (idReserva, nuevoEstado) => {
+        try {
+            const data = await apiRequest(`/api/admin/reservas/${idReserva}/estado`, {
+                method: "PATCH",
+                token,
+                body: { estado: nuevoEstado }
+            });
+
+            successToast(data.mensaje || `Reserva modificada a ${nuevoEstado} con éxito.`);
+            reload();
+        } catch (err) {
+            errorToast(`Error al cambiar estado: ${err.message}`);
+        }
+    };
+
+    const handleOpenCancelModal = (reserva) => {
+        setSelectedReservation(reserva);
+        setShowCancelModal(true);
+    };
+
+    const handleConfirmCancel = async () => {
+        if (!selectedReservation) return;
+
+        await handleUpdateStatus(selectedReservation.id_reserva, "cancelada");
+
+        setShowCancelModal(false);
+        setSelectedReservation(null);
+    };
+
+    const reservationsBySede = reservations.reduce((groups, res) => {
+        const sede = res.espacio_ubicacion || "Sede No Especificada";
+        if (!groups[sede]) {
+            groups[sede] = [];
+        }
+        groups[sede].push(res);
+        return groups;
+    }, {});
+
+
+    return (
+        <div style={{ minHeight: "100vh" }} className="bg-light py-5">
+            <Container>
+                <div className="mb-4">
+                    <h2 className="fw-bold text-dark mb-1">Reservas Globales</h2>
+                    <p className="text-muted small">Listado de Oficinas y Turnos</p>
+                </div>
+
+                {Object.keys(reservationsBySede).length > 0 ? (
+                    Object.entries(reservationsBySede).map(([sedeName, listaReservas]) => (
+                        <Card key={sedeName} className="shadow-sm border-0 mb-5 p-3 bg-white">
+                            <Card.Body>
+                                <h4 className="fw-bold text-primary mb-3 border-bottom pb-2">📍 {sedeName}</h4>
+
+                                <Table hover responsive className="align-middle mb-0">
+                                    <thead className="table-light">
+                                        <tr>
+                                            <th># Reserva</th>
+                                            <th>Espacio / Oficina</th>
+                                            <th>Fecha</th>
+                                            <th>Horario</th>
+                                            <th>Precio</th>
+                                            <th>Estado</th>
+                                            <th className="text-center">Acciones de Gestión</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {listaReservas.map((r) => {
+                                            const estado = r.estado.toLowerCase();
+                                            return (
+                                                <tr
+                                                    key={r.id_reserva}
+                                                    className={estado === "cancelada" ? "reservation-row-cancelada" : ""}
+                                                >
+                                                    <td>#{r.id_reserva}</td>
+                                                    <td className="fw-bold text-dark">{r.espacio_nombre}</td>
+                                                    <td>{formatReservationDate(r.fecha)}</td>
+                                                    <td>{formatHour(r.hora_inicio)}–{formatHour(r.hora_fin)}</td>
+                                                    <td className="text-end text-success fw-bold">
+                                                        ${parseFloat(r.precio).toLocaleString("es-AR")}
+                                                    </td>
+                                                    <td className="text-center">
+                                                        <Badge
+                                                            bg={estado === "confirmada" ? "success" : "secondary"}
+                                                            className={`reservation-status-${estado}`}
+                                                        >
+                                                            {r.estado}
+                                                        </Badge>
+                                                    </td>
+                                                    <td className="text-center">
+                                                        <div className="d-flex justify-content-center gap-2">
+                                                            {estado !== "cancelada" ? (
+                                                                <>
+                                                                    <Button
+                                                                        variant="success"
+                                                                        size="sm"
+                                                                        className="fw-semibold"
+                                                                        disabled={estado === "confirmada"}
+                                                                        onClick={() => handleUpdateStatus(r.id_reserva, "confirmada")}
+                                                                    >
+                                                                        Confirmar
+                                                                    </Button>
+                                                                    <Button
+                                                                        variant="outline-danger"
+                                                                        size="sm"
+                                                                        className="fw-semibold"
+                                                                        onClick={() => handleOpenCancelModal(r)}
+                                                                    >
+                                                                        Cancelar
+                                                                    </Button>
+                                                                </>
+                                                            ) : (
+                                                                <span></span>
+                                                            )}
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </Table>
+                            </Card.Body>
+                        </Card>
+                    ))
+                ) : (
+                    <div className="bg-white border rounded text-center text-muted py-5 shadow-sm">
+                        No hay ninguna reserva registrada en el sistema actualmente.
+                    </div>
+                )}
+            </Container>
+
+            <AreYouReallyReallySureYouWantToDoThatModal
+                show={showCancelModal}
+                onHide={() => setShowCancelModal(false)}
+                onConfirm={handleConfirmCancel}
+                resName={selectedReservation?.espacio_nombre}
+                resDate={selectedReservation?.fecha.slice(0, 10)}
+            />
+        </div>
+    );
+};
+
+export default PendingReservations;

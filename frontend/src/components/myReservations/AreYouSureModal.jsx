@@ -8,7 +8,6 @@ const AreYouReallyReallySureYouWantToDoThatModal = ({ show, onHide, onConfirm, r
             </Modal.Header>
             <Modal.Body>
                 <p>¿Estás seguro de que deseas cancelar tu reserva para <strong>{resName}</strong> para el dia <strong>{resDate}</strong>?</p>
-                <p className="text-muted small mb-0">Tendrás que volver a hacer la reserva desde cero.</p>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="outline-secondary" onClick={onHide}>

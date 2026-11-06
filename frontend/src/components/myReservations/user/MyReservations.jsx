@@ -1,11 +1,11 @@
 import { useState, useEffect, useContext } from "react";
 import { Container, Table, Button, Badge } from "react-bootstrap";
 import { useNavigate } from "react-router";
-import { JsonAuthContext } from "../../general/JsonAuthContext.jsx";
-import { errorToast, successToast } from "../../general/toast.js";
-import AreYouReallyReallySureYouWantToDoThatModal from "./AreYouSureModal.jsx";
-import { apiRequest } from "../../general/api.js";
+import { errorToast, successToast } from "../../../general/toast.js";
+import AreYouReallyReallySureYouWantToDoThatModal from "../AreYouSureModal.jsx";
+import { apiRequest } from "../../../general/api.js";
 import "./myReservations.css";
+import { JsonAuthContext } from "../../../general/authContext.js";
 
 const MESES_ABREVIADOS = [
   "ene", "feb", "mar", "abr", "may", "jun",
@@ -101,42 +101,41 @@ const MyReservations = () => {
               {reservations.length > 0 ? (
                 reservations.map((r) => {
                   const estado = r.estado.toLowerCase();
-
                   return (
-                  <tr
-                    key={r.id_reserva}
-                    className={estado === "cancelada" ? "reservation-row-cancelada" : ""}
-                  >
-                    <td className="fw-bold text-dark">{r.espacio_nombre}</td>
-                    <td>{formatReservationDate(r.fecha)}</td>
-                    <td>
-                      {formatHour(r.hora_inicio)}–{formatHour(r.hora_fin)}
-                    </td>
-                    <td className="text-center">
-                      <Badge
-                        bg={estado === "confirmada" ? "success" : "secondary"}
-                        className={`reservation-status-${estado}`}
-                      >
-                        {r.estado}
-                      </Badge>
-                    </td>
-                    <td className="text-end text-success fw-bold">
-                      ${parseFloat(r.precio).toLocaleString("es-AR")}
-                    </td>
-                    <td className="text-center">
-                      {estado !== "cancelada" ? (
-                        <Button
-                          variant="outline-danger"
-                          size="sm"
-                          onClick={() => handleOpenCancelModal(r)}
+                    <tr
+                      key={r.id_reserva}
+                      className={estado === "cancelada" ? "reservation-row-cancelada" : ""}
+                    >
+                      <td className="fw-bold text-dark">{r.espacio_nombre}</td>
+                      <td>{formatReservationDate(r.fecha)}</td>
+                      <td>
+                        {formatHour(r.hora_inicio)}–{formatHour(r.hora_fin)}
+                      </td>
+                      <td className="text-center">
+                        <Badge
+                          bg={estado === "confirmada" ? "success" : "secondary"}
+                          className={`reservation-status-${estado}`}
                         >
-                          Cancelar
-                        </Button>
-                      ) : (
-                        <span></span>
-                      )}
-                    </td>
-                  </tr>
+                          {r.estado}
+                        </Badge>
+                      </td>
+                      <td className="text-end text-success fw-bold">
+                        ${parseFloat(r.precio).toLocaleString("es-AR")}
+                      </td>
+                      <td className="text-center">
+                        {estado !== "cancelada" ? (
+                          <Button
+                            variant="outline-danger"
+                            size="sm"
+                            onClick={() => handleOpenCancelModal(r)}
+                          >
+                            Cancelar
+                          </Button>
+                        ) : (
+                          <span></span>
+                        )}
+                      </td>
+                    </tr>
                   );
                 })
               ) : (
