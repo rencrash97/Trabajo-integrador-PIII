@@ -6,11 +6,12 @@ import MainPage from './components/mainPage/MainPage.jsx';
 import OfficeCatalog from './components/officeCatalog/OfficeCatalog.jsx';
 import Login from './components/auth/login/Login.jsx';
 import BookingForm from './components/bookingForm/BookingForm.jsx';
-import MyReservations from './components/myReservations/user/MyReservations.jsx';
+import MyReservations from './components/reservations/user/MyReservations.jsx';
 import { PageNotFound } from './components/pageNotFound/PageNotFound.jsx';
-import Register from './components/auth/login/Register.jsx';
 import { Protected } from './components/auth/protection/Protected.jsx';
-import PendingReservations from './components/myReservations/admins/PendingReservations.jsx';
+import Register from './components/auth/login/Register.jsx';
+import PendingReservations from './components/reservations/admins/PendingReservations.jsx';
+import OfficeManagement from './components/office_management/OfficeManagement.jsx';
 
 function App() {
 
@@ -35,6 +36,7 @@ function App() {
           <Route path="/booking/:idEspacio" element={<BookingForm />} />
           <Route path="/reservations" element={<MyReservations />} />
           <Route path="/reservations/all" element={<PendingReservations />} />
+          <Route path="/catalog/management" element={<OfficeManagement />} />
         </Route>
 
       </Routes>
