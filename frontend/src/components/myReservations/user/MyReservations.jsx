@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { Container, Table, Button, Badge } from "react-bootstrap";
+import { Container, Table, Button, Badge, Form } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { errorToast, successToast } from "../../../general/toast.js";
 import AreYouReallyReallySureYouWantToDoThatModal from "../AreYouSureModal.jsx";
@@ -21,6 +21,7 @@ const MyReservations = () => {
   const { token, user } = useContext(JsonAuthContext);
 
   const [reservations, setReservations] = useState([]);
+  const [estadoSeleccionado, setEstadoSeleccionado] = useState("todos");
   const [modalShow, setModalShow] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState(null);
 
@@ -60,6 +61,11 @@ const MyReservations = () => {
     }
   };
 
+  const reservasFiltradas = reservations.filter((reserva) => {
+    if (estadoSeleccionado === "todos") return true;
+    return reserva.estado.toLowerCase() === estadoSeleccionado;
+  });
+
   return (
     <div style={{ minHeight: "100vh" }} className="bg-light">
       <Container className="py-5">
@@ -78,6 +84,19 @@ const MyReservations = () => {
           </Button>
         </div>
 
+        <Form.Group className="mb-4" style={{ maxWidth: "260px" }}>
+          <Form.Label className="fw-semibold">Filtrar por estado</Form.Label>
+          <Form.Select
+            value={estadoSeleccionado}
+            onChange={(event) => setEstadoSeleccionado(event.target.value)}
+          >
+            <option value="todos">Todos los estados</option>
+            <option value="pendiente">Pendientes</option>
+            <option value="confirmada">Confirmadas</option>
+            <option value="cancelada">Canceladas</option>
+          </Form.Select>
+        </Form.Group>
+
         <div className="bg-white border rounded shadow-sm p-3">
           <Table hover responsive className="align-middle mb-0">
             <thead className="table-light">
@@ -91,8 +110,8 @@ const MyReservations = () => {
               </tr>
             </thead>
             <tbody>
-              {reservations.length > 0 ? (
-                reservations.map((r) => {
+              {reservasFiltradas.length > 0 ? (
+                reservasFiltradas.map((r) => {
                   const estado = r.estado.toLowerCase();
                   const turnoComenzado = turnoYaComenzo(r);
                   const puedeCancelar =
@@ -138,7 +157,9 @@ const MyReservations = () => {
               ) : (
                 <tr>
                   <td colSpan="6" className="text-center text-muted py-4">
-                    No tienes reservas registradas actualmente.
+                    {estadoSeleccionado === "todos"
+                      ? "No tenés reservas registradas actualmente."
+                      : "No hay reservas que coincidan con el estado seleccionado."}
                   </td>
                 </tr>
               )}

@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { Container, Table, Button, Badge, Card } from "react-bootstrap";
+import { Container, Table, Button, Badge, Card, Form } from "react-bootstrap";
 import { errorToast, successToast } from "../../../general/toast.js";
 import { JsonAuthContext } from "../../../general/JsonAuthContext.jsx";
 import { apiRequest } from "../../../general/api.js";
@@ -18,6 +18,7 @@ const PendingReservations = () => {
 
     const { token } = useContext(JsonAuthContext);
     const [reservations, setReservations] = useState([]);
+    const [estadoSeleccionado, setEstadoSeleccionado] = useState("todos");
     const [showCancelModal, setShowCancelModal] = useState(false);
     const [selectedReservation, setSelectedReservation] = useState(null);
 
@@ -65,7 +66,12 @@ const PendingReservations = () => {
         setSelectedReservation(null);
     };
 
-    const reservationsBySede = reservations.reduce((groups, res) => {
+    const reservasFiltradas = reservations.filter((reserva) => {
+        if (estadoSeleccionado === "todos") return true;
+        return reserva.estado.toLowerCase() === estadoSeleccionado;
+    });
+
+    const reservationsBySede = reservasFiltradas.reduce((groups, res) => {
         const sede = res.espacio_ubicacion || "Sede No Especificada";
         if (!groups[sede]) {
             groups[sede] = [];
@@ -82,6 +88,19 @@ const PendingReservations = () => {
                     <h2 className="fw-bold text-dark mb-1">Reservas Globales</h2>
                     <p className="text-muted small">Listado de Oficinas y Turnos</p>
                 </div>
+
+                <Form.Group className="mb-4" style={{ maxWidth: "260px" }}>
+                    <Form.Label className="fw-semibold">Filtrar por estado</Form.Label>
+                    <Form.Select
+                        value={estadoSeleccionado}
+                        onChange={(event) => setEstadoSeleccionado(event.target.value)}
+                    >
+                        <option value="todos">Todos los estados</option>
+                        <option value="pendiente">Pendientes</option>
+                        <option value="confirmada">Confirmadas</option>
+                        <option value="cancelada">Canceladas</option>
+                    </Form.Select>
+                </Form.Group>
 
                 {Object.keys(reservationsBySede).length > 0 ? (
                     Object.entries(reservationsBySede).map(([sedeName, listaReservas]) => (
@@ -172,7 +191,9 @@ const PendingReservations = () => {
                     ))
                 ) : (
                     <div className="bg-white border rounded text-center text-muted py-5 shadow-sm">
-                        No hay ninguna reserva registrada en el sistema actualmente.
+                        {estadoSeleccionado === "todos"
+                            ? "No hay ninguna reserva registrada en el sistema actualmente."
+                            : "No hay reservas que coincidan con el estado seleccionado."}
                     </div>
                 )}
             </Container>
