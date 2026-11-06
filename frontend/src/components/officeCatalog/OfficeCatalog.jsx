@@ -3,6 +3,7 @@ import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { errorToast } from "../../general/toast.js";
 import { apiRequest } from "../../general/api.js";
+import "./officeCatalog.css";
 
 const OfficeCatalog = () => {
 
@@ -34,19 +35,18 @@ const OfficeCatalog = () => {
             <Container className="py-5">
                 <div className="text-center mb-5">
                     <h1 className="fw-bold text-dark">Espacios de Trabajo Disponibles</h1>
-                    <p className="text-muted fs-5">Encontrá y alquilá tu oficina por hora o por día de forma rápida y sencilla.</p>
                 </div>
 
                 <Row className="g-4">
                     {offices.map((office) => (
                         <Col key={office.id_espacio} md={4}>
-                            <Card className="shadow-sm border-0 h-100">
+                            <Card className="office-card h-100">
                                 <Card.Body className="d-flex flex-column p-4">
                                     <Card.Title className="fw-bold text-primary fs-4">
                                         {office.nombre}
                                     </Card.Title>
                                     <Card.Subtitle className="mb-3 text-muted">
-                                        📍 {office.ubicacion}
+                                        {office.ubicacion}
                                     </Card.Subtitle>
                                     <Card.Text className="text-secondary mb-4">
                                         {office.descripcion}
@@ -55,7 +55,7 @@ const OfficeCatalog = () => {
                                     <div className="mt-auto">
                                         <div className="d-flex justify-content-between align-items-center mb-3">
                                             <span className="text-muted fw-semibold">
-                                                👥 Capacidad: {office.capacidad} pers.
+                                                Capacidad: {office.capacidad} pers.
                                             </span>
                                             <span className="fw-bold text-success fs-5">
                                                 ${office.precio_por_turno} /h.

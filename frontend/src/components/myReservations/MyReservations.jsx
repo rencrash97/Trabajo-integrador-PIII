@@ -5,6 +5,19 @@ import { JsonAuthContext } from "../../general/JsonAuthContext.jsx";
 import { errorToast, successToast } from "../../general/toast.js";
 import AreYouReallyReallySureYouWantToDoThatModal from "./AreYouSureModal.jsx";
 import { apiRequest } from "../../general/api.js";
+import "./myReservations.css";
+
+const MESES_ABREVIADOS = [
+  "ene", "feb", "mar", "abr", "may", "jun",
+  "jul", "ago", "sep", "oct", "nov", "dic",
+];
+
+const formatReservationDate = (date) => {
+  const [year, month, day] = date.slice(0, 10).split("-");
+  return `${Number(day)} ${MESES_ABREVIADOS[Number(month) - 1]} ${year}`;
+};
+
+const formatHour = (hour) => String(hour).slice(0, 5);
 
 const fetchMyReservations = (token) =>
   apiRequest("/api/reservas/mias", { token });
@@ -76,42 +89,42 @@ const MyReservations = () => {
           <Table hover responsive className="align-middle mb-0">
             <thead className="table-light">
               <tr>
-                <th>#</th>
                 <th>Oficina</th>
                 <th>Fecha</th>
                 <th>Horario</th>
-                <th>Estado</th>
-                <th>Total</th>
-                <th>Acciones</th>
+                <th className="text-center">Estado</th>
+                <th className="text-end">Total</th>
+                <th className="text-center">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {reservations.length > 0 ? (
-                reservations.map((r, index) => (
-                  <tr key={r.id_reserva}>
-                    <td>{index + 1}</td>
+                reservations.map((r) => {
+                  const estado = r.estado.toLowerCase();
+
+                  return (
+                  <tr
+                    key={r.id_reserva}
+                    className={estado === "cancelada" ? "reservation-row-cancelada" : ""}
+                  >
                     <td className="fw-bold text-dark">{r.espacio_nombre}</td>
-                    <td>{r.fecha.slice(0, 10)}</td>
+                    <td>{formatReservationDate(r.fecha)}</td>
                     <td>
-                      {r.turno_nombre} ({r.hora_inicio.slice(0, 5)} -{" "}
-                      {r.hora_fin.slice(0, 5)} hs.)
+                      {formatHour(r.hora_inicio)}–{formatHour(r.hora_fin)}
                     </td>
-                    <td>
+                    <td className="text-center">
                       <Badge
-                        bg={
-                          r.estado.toLowerCase() === "confirmada"
-                            ? "success"
-                            : "warning"
-                        }
+                        bg={estado === "confirmada" ? "success" : "secondary"}
+                        className={`reservation-status-${estado}`}
                       >
                         {r.estado}
                       </Badge>
                     </td>
-                    <td className="text-success fw-bold">
+                    <td className="text-end text-success fw-bold">
                       ${parseFloat(r.precio).toLocaleString("es-AR")}
                     </td>
-                    <td>
-                      {r.estado.toLowerCase() !== "cancelada" ? (
+                    <td className="text-center">
+                      {estado !== "cancelada" ? (
                         <Button
                           variant="outline-danger"
                           size="sm"
@@ -124,10 +137,11 @@ const MyReservations = () => {
                       )}
                     </td>
                   </tr>
-                ))
+                  );
+                })
               ) : (
                 <tr>
-                  <td colSpan="8" className="text-center text-muted py-4">
+                  <td colSpan="6" className="text-center text-muted py-4">
                     No tienes reservas registradas actualmente.
                   </td>
                 </tr>

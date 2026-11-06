@@ -1,0 +1,13 @@
+.reservation-status-pendiente {
+  background-color: #f6df8d !important;
+  color: #5e4900 !important;
+}
+
+.reservation-status-cancelada {
+  background-color: #e1e7e3 !important;
+  color: #58645d !important;
+}
+
+.reservation-row-cancelada {
+  opacity: 0.40;
+}

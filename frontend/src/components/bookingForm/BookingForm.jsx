@@ -23,7 +23,6 @@ const BookingForm = () => {
   const dia = String(mañana.getDate()).padStart(2, "0");
   const fechaMinima = `${año}-${mes}-${dia}`;
 
-  console.log(mañana);
 
   useEffect(() => {
     const fetchOficina = async () => {
@@ -96,7 +95,7 @@ const BookingForm = () => {
                   Reservar {office?.nombre}
                 </h3>
                 <p className="text-muted small mb-3">
-                  💲 Costo por turno: ${office?.precio_por_turno}
+                  {office?.ubicacion}, máximo {office?.capacidad} personas
                 </p>
 
                 <Form onSubmit={handleBooking}>
@@ -119,10 +118,11 @@ const BookingForm = () => {
 
                   <Form.Group className="mb-4" controlId="bookingTurno">
                     <Form.Label className="fw-semibold">
-                      Seleccionar Turno Horario
+                      Seleccionar Turno
                     </Form.Label>
 
                     <Form.Select
+                      className="text-center"
                       value={idTurnoSelect}
                       onChange={(e) => setIdTurnoSelect(e.target.value)}
                       required
@@ -149,7 +149,7 @@ const BookingForm = () => {
 
                         return (
                           <option key={turno.id_turno} value={turno.id_turno}>
-                            {turno.nombre} ({inicio} - {fin} hs)
+                            {turno.nombre} - ({inicio} - {fin})
                           </option>
                         );
                       })}

@@ -1,9 +1,9 @@
-import { useState, useRef, useContext } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { errorToast } from "../../../general/toast.js";
 import { JsonAuthContext } from "../../../general/JsonAuthContext.jsx";
-import { apiRequest } from "../../../general/api.js";
+import { apiRequest, SESSION_EXPIRED_MESSAGE_KEY } from "../../../general/api.js";
 
 
 const Login = () => {
@@ -20,6 +20,20 @@ const Login = () => {
 
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
+
+    // notificar sesion expirada
+    useEffect(() => {
+        const sessionMessage = sessionStorage.getItem(SESSION_EXPIRED_MESSAGE_KEY);
+
+        if (!sessionMessage) return;
+
+        const notificationTimer = window.setTimeout(() => {
+            errorToast(sessionMessage);
+            sessionStorage.removeItem(SESSION_EXPIRED_MESSAGE_KEY);
+        }, 0);
+
+        return () => window.clearTimeout(notificationTimer);
+    }, []);
 
     const handleEmailChange = (event) => {
         setEmail(event.target.value);

@@ -33,24 +33,24 @@ const Navigation = () => {
 
                 <div className="d-flex align-items-center gap-2 flex-shrink-0">
                     <Navbar.Brand as={Link} to="/" className="fw-bold">
-                        🏢 Alquiler de Oficinas
+                        Alquiler de Oficinas
                     </Navbar.Brand>
+
+                    {isSignedIn && (
+                        <NavDropdown title="☰ Menú" align="start">
+                            <NavDropdown.Item href="#">Mi Perfil</NavDropdown.Item>
+                            <NavDropdown.Item href="/reservations">Mis Reservas</NavDropdown.Item>
+                            <NavDropdown.Item href="/catalog">Catálogo</NavDropdown.Item>
+                            <NavDropdown.Item href="#">Soporte Técnico</NavDropdown.Item>
+                            <NavDropdown.Divider />
+                            <NavDropdown.Item href="#" onClick={handleLogout}>Cerrar Sesión</NavDropdown.Item>
+                        </NavDropdown>
+                    )}
                 </div>
 
                 <Nav className="d-flex flex-row align-items-center gap-2 flex-shrink-0">
                     {isSignedIn ? (
-                        <div className="d-flex align-items-center gap-2">
-                            <h6 className="mb-0">{`¡Bienvenido/a, ${user.nombre} ${user.apellido}!`}</h6>
-
-                            <NavDropdown title="⚙️" align="end">
-                                <NavDropdown.Item href="#">Mi Perfil</NavDropdown.Item>
-                                <NavDropdown.Item href="/reservations">Mis Reservas</NavDropdown.Item>
-                                <NavDropdown.Item href="/catalog">Catálogo</NavDropdown.Item>
-                                <NavDropdown.Item href="#">Soporte Técnico</NavDropdown.Item>
-                                <NavDropdown.Divider />
-                                <NavDropdown.Item href="#" onClick={handleLogout}>Cerrar Sesión</NavDropdown.Item>
-                            </NavDropdown>
-                        </div>
+                        <h6 className="mb-0">{`${user.nombre} ${user.apellido}`}</h6>
                     ) : (
                         <div className="d-flex align-items-center gap-2 ms-2">
                             <Button className="btn-auth" onClick={navigateLogin}>Iniciar Sesión</Button>

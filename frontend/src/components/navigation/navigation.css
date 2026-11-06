@@ -2,39 +2,32 @@
     width: 100%;
     display: flex;
     flex-direction: row;
-    border-bottom: 1px solid #64bffc;
-    background-color: rgb(6, 26, 54);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+    background-color: var(--color-primary-deep);
     position: sticky;
     top: 0;
     z-index: 1020;
 }
 
-button {
-    font-size: 14px !important;
-    color: whitesmoke !important;
-    font-weight: 500;
-    padding: 6px 16px;
-    border-radius: 6px;
-    box-shadow: none;
-    transition: all 0.2s ease-in-out;
+.navbar-custom .navbar-brand,
+.navbar-custom h6 {
+    color: var(--color-on-primary);
 }
 
-.btn {
-    background-color: rgb(67, 29, 136);
-    color: var(--bs-primary);
-    border: 1px solid transparent;
+.navbar-custom .navbar-brand:hover {
+    color: var(--color-on-primary-muted);
 }
 
-.btn:hover {
-    background-color: rgba(105, 2, 100, 0.74);
+.navbar-custom .btn-auth {
+    --bs-btn-color: var(--color-on-primary);
+    --bs-btn-bg: var(--color-primary);
+    --bs-btn-border-color: var(--color-primary);
+    --bs-btn-hover-color: var(--color-on-primary);
+    --bs-btn-hover-bg: var(--color-primary-hover);
+    --bs-btn-hover-border-color: var(--color-primary-hover);
 }
 
-.btn-auth {
-    background-color: rgb(39, 146, 44);
-    color: var(--bs-primary);
-    border: 1px solid transparent;
-}
-
-.btn-auth:hover {
-    background-color: rgba(49, 48, 107, 0.445);
+.navbar-custom .nav-link,
+.navbar-custom .dropdown-toggle {
+    color: var(--color-on-primary);
 }

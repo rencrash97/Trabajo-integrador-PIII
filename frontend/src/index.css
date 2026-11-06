@@ -1,9 +1,44 @@
+:root {
+  --color-primary: #155b42;
+  --color-primary-hover: #0f4733;
+  --color-primary-deep: #0b3829;
+  --color-page: #f6f8f6;
+  --color-text: #24332c;
+  --color-muted: #66756d;
+  --color-border: #dbe5df;
+  --color-on-primary: #ffffff;
+  --color-on-primary-muted: #c9d8d0;
+
+  --bs-primary: var(--color-primary);
+  --bs-primary-rgb: 21, 91, 66;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html, body, #root {
   margin: 0;
   padding: 0;
   width: 100%;
   height: 100%;
-  box-sizing: border-box;
-  background-color: rgb(59, 83, 114);
-  color: rgb(173, 188, 190);
+  background-color: var(--color-page);
+  color: var(--color-text);
+}
+
+.text-primary {
+  color: var(--color-primary) !important;
+}
+
+.btn-primary {
+  --bs-btn-color: var(--color-on-primary);
+  --bs-btn-bg: var(--color-primary);
+  --bs-btn-border-color: var(--color-primary);
+  --bs-btn-hover-color: var(--color-on-primary);
+  --bs-btn-hover-bg: var(--color-primary-hover);
+  --bs-btn-hover-border-color: var(--color-primary-hover);
+  --bs-btn-active-bg: var(--color-primary-hover);
+  --bs-btn-active-border-color: var(--color-primary-hover);
 }

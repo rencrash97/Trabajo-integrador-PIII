@@ -1,11 +1,11 @@
 .custom-footer {
-  background-color: #000000;
-  color: #ffffff;
+  background-color: var(--color-primary-deep);
+  color: var(--color-on-primary);
   padding: 2rem 0;
   width: 100%;
 }
 
 .custom-footer p {
-  color: #aaaaaa;
+  color: var(--color-on-primary-muted);
   margin-bottom: 0;
 }
