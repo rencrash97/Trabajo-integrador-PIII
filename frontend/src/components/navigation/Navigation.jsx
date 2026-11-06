@@ -1,4 +1,3 @@
-
 import { Navbar, Container, NavDropdown, Button, Nav } from 'react-bootstrap';
 import './navigation.css';
 import { Link, useNavigate } from "react-router";
@@ -6,11 +5,10 @@ import { useContext } from "react";
 import { JsonAuthContext } from '../../general/JsonAuthContext.jsx';
 
 
-
 const Navigation = () => {
 
     const navigate = useNavigate();
-    const { isSignedIn, localLogout, user } = useContext(JsonAuthContext);
+    const { isSignedIn, localLogout, user, userRole } = useContext(JsonAuthContext);
 
     const handleLogout = () => {
         navigate("/");
@@ -41,6 +39,14 @@ const Navigation = () => {
                             <NavDropdown.Item href="#">Mi Perfil</NavDropdown.Item>
                             <NavDropdown.Item href="/reservations">Mis Reservas</NavDropdown.Item>
                             <NavDropdown.Item href="/catalog">Catálogo</NavDropdown.Item>
+                            {["admin", "super_admin"].includes(userRole) && (
+                            <NavDropdown.Item
+                                as={Link}
+                                to="/reservations/all">
+                                Gestión de reservas
+                                { /* no recarga la pagina */}
+                            </NavDropdown.Item>
+                            )}
                             <NavDropdown.Item href="#">Soporte Técnico</NavDropdown.Item>
                             <NavDropdown.Divider />
                             <NavDropdown.Item href="#" onClick={handleLogout}>Cerrar Sesión</NavDropdown.Item>

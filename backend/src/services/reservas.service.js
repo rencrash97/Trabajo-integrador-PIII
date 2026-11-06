@@ -158,26 +158,6 @@ export const ReservasService = {
     return reserva;
   },
 
-  // verificar que no comenzo el turno
-  async canCancel(idReserva, idUsuario) {
-    const query = `
-        SELECT
-            TIMESTAMP(r.fecha, t.hora_inicio) > NOW()
-                AS puede_cancelar
-        FROM Reserva r
-        INNER JOIN Turno t ON r.id_turno = t.id_turno
-        WHERE r.id_reserva = ?
-          AND r.id_usuario = ?
-    `;
-
-    const [rows] = await pool.execute(query, [
-        idReserva,
-        idUsuario
-    ]);
-
-    return rows[0]?.puede_cancelar === 1;
-  },
-
   async cancelMyReservation(idReserva, idUsuario) {
     if (
       !Number.isSafeInteger(idReserva) ||

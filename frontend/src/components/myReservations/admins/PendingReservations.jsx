@@ -1,10 +1,18 @@
 import { useState, useEffect, useContext } from "react";
-import { Container, Table, Button, Badge, Card, Row, Col } from "react-bootstrap";
+import { Container, Table, Button, Badge, Card } from "react-bootstrap";
 import { errorToast, successToast } from "../../../general/toast.js";
 import { JsonAuthContext } from "../../../general/JsonAuthContext.jsx";
 import { apiRequest } from "../../../general/api.js";
 import AreYouReallyReallySureYouWantToDoThatModal from "../AreYouSureModal.jsx";
 import "./PendingReservations.css";
+import {
+    formatReservationDate,
+    formatHour,
+    turnoYaComenzo,
+} from "../reservationUtils.js";
+
+const fetchAllReservations = (token) =>
+    apiRequest("/api/admin/reservas", { token });
 
 const PendingReservations = () => {
 
@@ -12,20 +20,6 @@ const PendingReservations = () => {
     const [reservations, setReservations] = useState([]);
     const [showCancelModal, setShowCancelModal] = useState(false);
     const [selectedReservation, setSelectedReservation] = useState(null);
-
-    const MESES_ABREVIADOS = [
-        "ene", "feb", "mar", "abr", "may", "jun",
-        "jul", "ago", "sep", "oct", "nov", "dic",
-    ];
-
-    const formatReservationDate = (date) => {
-        const [year, month, day] = date.slice(0, 10).split("-");
-        return `${Number(day)} ${MESES_ABREVIADOS[Number(month) - 1]} ${year}`;
-    };
-
-    const formatHour = (hour) => String(hour).slice(0, 5);
-
-    const fetchAllReservations = (token) => apiRequest("/api/admin/reservas", { token });
 
     const reload = () => {
         if (!token) return;
@@ -35,7 +29,11 @@ const PendingReservations = () => {
     };
 
     useEffect(() => {
-        reload();
+        if (!token) return;
+
+        fetchAllReservations(token)
+            .then((data) => setReservations(data || []))
+            .catch((err) => errorToast(err.message || "Error al conectar con el servidor."));
     }, [token]);
 
     const handleUpdateStatus = async (idReserva, nuevoEstado) => {
@@ -89,12 +87,13 @@ const PendingReservations = () => {
                     Object.entries(reservationsBySede).map(([sedeName, listaReservas]) => (
                         <Card key={sedeName} className="shadow-sm border-0 mb-5 p-3 bg-white">
                             <Card.Body>
-                                <h4 className="fw-bold text-primary mb-3 border-bottom pb-2">📍 {sedeName}</h4>
+                                <h4 className="fw-bold text-primary mb-3 border-bottom pb-2">{sedeName}</h4>
 
                                 <Table hover responsive className="align-middle mb-0">
                                     <thead className="table-light">
                                         <tr>
-                                            <th># Reserva</th>
+                                            <th>Reserva Id</th>
+                                            <th>Usuario</th>
                                             <th>Espacio / Oficina</th>
                                             <th>Fecha</th>
                                             <th>Horario</th>
@@ -106,12 +105,22 @@ const PendingReservations = () => {
                                     <tbody>
                                         {listaReservas.map((r) => {
                                             const estado = r.estado.toLowerCase();
+                                            const turnoComenzado = turnoYaComenzo(r);
+                                            const puedeGestionar =
+                                                estado !== "cancelada" && !turnoComenzado;
+
                                             return (
                                                 <tr
                                                     key={r.id_reserva}
                                                     className={estado === "cancelada" ? "reservation-row-cancelada" : ""}
                                                 >
-                                                    <td>#{r.id_reserva}</td>
+                                                    <td>{r.id_reserva}</td>
+                                                    <td>
+                                                        <div className="fw-semibold text-dark">
+                                                            {r.usuario_nombre} {r.usuario_apellido}
+                                                        </div>
+                                                        <small className="text-muted">{r.usuario_mail}</small>
+                                                    </td>
                                                     <td className="fw-bold text-dark">{r.espacio_nombre}</td>
                                                     <td>{formatReservationDate(r.fecha)}</td>
                                                     <td>{formatHour(r.hora_inicio)}–{formatHour(r.hora_fin)}</td>
@@ -128,7 +137,7 @@ const PendingReservations = () => {
                                                     </td>
                                                     <td className="text-center">
                                                         <div className="d-flex justify-content-center gap-2">
-                                                            {estado !== "cancelada" ? (
+                                                            {puedeGestionar ? (
                                                                 <>
                                                                     <Button
                                                                         variant="success"
@@ -148,9 +157,9 @@ const PendingReservations = () => {
                                                                         Cancelar
                                                                     </Button>
                                                                 </>
-                                                            ) : (
-                                                                <span></span>
-                                                            )}
+                                                            ) : turnoComenzado && estado !== "cancelada" ? (
+                                                                <span className="text-muted small">Turno ya iniciado</span>
+                                                            ) : null}
                                                         </div>
                                                     </td>
                                                 </tr>

@@ -6,18 +6,11 @@ import AreYouReallyReallySureYouWantToDoThatModal from "../AreYouSureModal.jsx";
 import { apiRequest } from "../../../general/api.js";
 import "./myReservations.css";
 import { JsonAuthContext } from "../../../general/authContext.js";
-
-const MESES_ABREVIADOS = [
-  "ene", "feb", "mar", "abr", "may", "jun",
-  "jul", "ago", "sep", "oct", "nov", "dic",
-];
-
-const formatReservationDate = (date) => {
-  const [year, month, day] = date.slice(0, 10).split("-");
-  return `${Number(day)} ${MESES_ABREVIADOS[Number(month) - 1]} ${year}`;
-};
-
-const formatHour = (hour) => String(hour).slice(0, 5);
+import {
+  formatReservationDate,
+  formatHour,
+  turnoYaComenzo,
+} from "../reservationUtils.js";
 
 const fetchMyReservations = (token) =>
   apiRequest("/api/reservas/mias", { token });
@@ -101,6 +94,10 @@ const MyReservations = () => {
               {reservations.length > 0 ? (
                 reservations.map((r) => {
                   const estado = r.estado.toLowerCase();
+                  const turnoComenzado = turnoYaComenzo(r);
+                  const puedeCancelar =
+                    estado !== "cancelada" && !turnoComenzado;
+
                   return (
                     <tr
                       key={r.id_reserva}
@@ -123,7 +120,7 @@ const MyReservations = () => {
                         ${parseFloat(r.precio).toLocaleString("es-AR")}
                       </td>
                       <td className="text-center">
-                        {estado !== "cancelada" ? (
+                        {puedeCancelar ? (
                           <Button
                             variant="outline-danger"
                             size="sm"
@@ -131,9 +128,9 @@ const MyReservations = () => {
                           >
                             Cancelar
                           </Button>
-                        ) : (
-                          <span></span>
-                        )}
+                        ) : turnoComenzado && estado !== "cancelada" ? (
+                          <span className="text-muted small">Turno ya iniciado</span>
+                        ) : null}
                       </td>
                     </tr>
                   );

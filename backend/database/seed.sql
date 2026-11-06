@@ -102,7 +102,7 @@ VALUES (
         'Sala Norte',
         'Sala de reuniones con pantalla y pizarra',
         8,
-        'Piso 1',
+        'Pasaje El Ombú 2351',
         18000.00,
         TRUE
     ),
@@ -111,7 +111,7 @@ VALUES (
         'Sala Sur',
         'Sala pequeña para reuniones',
         4,
-        'Piso 1',
+        'Av. Del Ceibo 3145',
         12000.00,
         TRUE
     ),
@@ -120,7 +120,7 @@ VALUES (
         'Oficina Privada A',
         'Oficina cerrada para trabajo individual o de equipo',
         3,
-        'Piso 2',
+        'Bulevar Las Calandrias 1630',
         22000.00,
         TRUE
     ),
@@ -129,7 +129,7 @@ VALUES (
         'Escritorio Compartido 01',
         'Puesto individual en área compartida',
         1,
-        'Piso 0',
+        'Bulevar Las Calandrias 1630',
         5000.00,
         TRUE
     ),
@@ -138,7 +138,7 @@ VALUES (
         'Sala en Mantenimiento',
         'Espacio temporalmente fuera de servicio',
         10,
-        'Piso 2',
+        'Bulevar Las Calandrias 1630',
         20000.00,
         FALSE
     );
