@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { errorToast, successToast } from "../../../general/toast.js";
+import { apiRequest } from "../../../general/api.js";
 
 const Register = () => {
     const navigate = useNavigate();
@@ -75,22 +76,15 @@ const Register = () => {
         }
 
         try {
-            const response = await fetch("http://localhost:3000/api/usuarios", {
+            const data = await apiRequest("/api/usuarios", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
+                body: {
                     nombre: nombre,
                     apellido: apellido,
                     mail: email,
                     password: password
-                }),
+                },
             });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || data.error || "No se pudo crear la cuenta :(");
-            }
 
             successToast(data.mensaje || "¡Cuenta creada con éxito! Ya podés iniciar sesión :)");
             navigate("/login");

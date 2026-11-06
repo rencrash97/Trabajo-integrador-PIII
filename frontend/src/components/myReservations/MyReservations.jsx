@@ -4,6 +4,9 @@ import { useNavigate } from "react-router";
 import { JsonAuthContext } from "../../general/JsonAuthContext.jsx";
 import { errorToast, successToast } from "../../general/toast.js";
 import AreYouReallyReallySureYouWantToDoThatModal from "./AreYouSureModal.jsx";
+import { apiRequest } from "../../general/api.js";
+
+const fetchMyReservations = (token) => apiRequest("/api/reservas/mias", { token });
 
 const MyReservations = () => { //agregar mensaje en reserva de pendiente
     const navigate = useNavigate();
@@ -13,31 +16,13 @@ const MyReservations = () => { //agregar mensaje en reserva de pendiente
     const [modalShow, setModalShow] = useState(false);
     const [selectedReservation, setSelectedReservation] = useState(null);
 
-    const fetchMyReservations = async () => {
-        try {
-            const response = await fetch("http://localhost:3000/api/reservas/mias", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                }
-            });
+    useEffect(() => {
+        if (!token) return;
 
-            const data = await response.json();
-            
-            if (!response.ok) throw new Error(data.error || "No se pudieron cargar tus reservas.");
-            
-            setReservations(data.reservas);
-
-        } catch (err) {
-            errorToast(err.message || "Error al conectar con el servidor.");
-        }
-        
-    };
-    
-    useEffect(() => { 
-        if (token) fetchMyReservations();
-    }, []);//creo que no es necesario agregar el token
+        void fetchMyReservations(token)
+            .then((data) => setReservations(data.reservas))
+            .catch((err) => errorToast(err.message || "Error al conectar con el servidor."));
+    }, [token]);
 
     const handleOpenCancelModal = (reservation) => {
         setSelectedReservation(reservation);
@@ -48,20 +33,15 @@ const MyReservations = () => { //agregar mensaje en reserva de pendiente
         if (!selectedReservation) return;
 
         try {
-            const response = await fetch(`http://localhost:3000/api/reservas/${selectedReservation.id_reserva}/cancelar`, {
+            const data = await apiRequest(`/api/reservas/${selectedReservation.id_reserva}/cancelar`, {
                 method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                }
+                token,
             });
-
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.error || "No se pudo cancelar la reserva.");
 
             successToast(data.mensaje || "Reserva cancelada correctamente.");
             setModalShow(false);
-            fetchMyReservations();
+            const refreshedData = await fetchMyReservations(token);
+            setReservations(refreshedData.reservas);
 
         } catch (err) {
             errorToast(`Error al cancelar: ${err.message}`);

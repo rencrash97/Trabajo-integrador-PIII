@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { errorToast } from "../../general/toast.js";
+import { apiRequest } from "../../general/api.js";
 
 const OfficeCatalog = () => {
 
@@ -13,13 +14,7 @@ const OfficeCatalog = () => {
 
         const fetchOffices = async () => {
             try {
-                const response = await fetch("http://localhost:3000/api/espacios");
-
-                if (!response.ok) {
-                    throw new Error("No se pudo conectar con el servidor.");
-                }
-
-                const data = await response.json();
+                const data = await apiRequest("/api/espacios");
                 setOffices(data);
 
             } catch (err) {

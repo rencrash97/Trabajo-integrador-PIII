@@ -1,8 +1,9 @@
 import { useState, useRef, useContext } from "react";
-import { Container, Row, Col, Card, Form, Button, Alert } from "react-bootstrap";
+import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { errorToast } from "../../../general/toast.js";
 import { JsonAuthContext } from "../../../general/JsonAuthContext.jsx";
+import { apiRequest } from "../../../general/api.js";
 
 
 const Login = () => {
@@ -49,17 +50,10 @@ const Login = () => {
         }
 
         try {
-            const response = await fetch("http://localhost:3000/api/auth/login", {
+            const data = await apiRequest("/api/auth/login", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ mail: email, password: password }),
+                body: { mail: email, password: password },
             });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || "Credenciales incorrectas");
-            }
 
             localLogin(data.usuario, data.token);
             navigate("/reservations"); //cuando haya un perfil, cambiar navegacion a perfil principal
@@ -68,8 +62,6 @@ const Login = () => {
             errorToast(err.message);
         };
     };
-
-    const navigateLogin = () => { navigate("/") };
 
     return (
         <div style={{ minHeight: "100vh" }} className="bg-light">

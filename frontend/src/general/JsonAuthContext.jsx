@@ -1,6 +1,7 @@
-import { createContext, useState } from "react";
+import { useState } from "react";
+import { JsonAuthContext } from "./authContext.js";
 
-export const JsonAuthContext = createContext();
+export { JsonAuthContext } from "./authContext.js";
 
 export const JsonAuthProvider = ({ children }) => {
 

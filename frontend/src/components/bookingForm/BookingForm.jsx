@@ -1,8 +1,9 @@
 import { useState, useEffect, useContext } from "react";
-import { Container, Row, Col, Card, Form, Button, Spinner } from "react-bootstrap";
+import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router";
 import { errorToast, successToast } from "../../general/toast.js";
 import { JsonAuthContext } from "../../general/JsonAuthContext.jsx";
+import { apiRequest } from "../../general/api.js";
 
 const BookingForm = () => {
 
@@ -29,22 +30,10 @@ const BookingForm = () => {
         const fetchOficina = async () => {
             try {
 
-                const resOficina = await fetch(`http://localhost:3000/api/espacios/${idEspacio}`);
-
-                if (!resOficina.ok) {
-                    throw new Error("No se pudo obtener la información de la oficina.");
-                };
-
-                const dataOffice = await resOficina.json();
+                const dataOffice = await apiRequest(`/api/espacios/${idEspacio}`);
                 setOffice(dataOffice);
 
-                const resTurnos = await fetch("http://localhost:3000/api/turnos");
-
-                if (!resTurnos.ok) {
-                    throw new Error("No se pudieron obtener los horarios.");
-                };
-
-                const dataTurnos = await resTurnos.json();
+                const dataTurnos = await apiRequest("/api/turnos");
                 setTurnos(dataTurnos);
 
             } catch (err) {
@@ -65,20 +54,11 @@ const BookingForm = () => {
         };
 
         try {
-            const response = await fetch("http://localhost:3000/api/reservas", {
+            const data = await apiRequest("/api/reservas", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-                body: JSON.stringify(nuevaReserva)
+                token,
+                body: nuevaReserva,
             });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.error || "No se pudo procesar la reserva.");
-            }
 
             successToast(data.mensaje || "¡Solicitud de reserva enviada correctamente!");
             navigate("/reservations");

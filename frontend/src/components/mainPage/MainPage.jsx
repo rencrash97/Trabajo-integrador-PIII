@@ -1,9 +1,9 @@
-import { Container, Button } from "react-bootstrap";
-import { useNavigate } from "react-router";
+import { Container } from "react-bootstrap";
+import officeThree from "../../assets/oficina-3.jpg";
+import officeFive from "../../assets/oficina-5.jpg";
+import office from "../../assets/oficina.jpg";
 
 const MainPage = () => {
-  const navigate = useNavigate();
-
   return (
     <Container className="py-5">
       <div className="text-center mb-5">
@@ -13,15 +13,15 @@ const MainPage = () => {
 
       <main>
         <div className="mb-5">
-          <img src="/src/assets/oficina-3.jpg" alt="Img_1" className="w-100 rounded shadow-sm mb-2" />
+          <img src={officeThree} alt="Espacio de coworking luminoso" className="w-100 rounded shadow-sm mb-2" />
           <p className="text-secondary">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptate provident voluptas fugit maiores harum nobis? In omnis nihil mollitia consequatur sequi culpa praesentium fugiat iusto recusandae ad, consequuntur inventore sapiente.</p>
         </div>
         <div className="mb-5">
-          <img src="/src/assets/oficina-5.jpg" alt="Img_2" className="w-100 rounded shadow-sm mb-2" />
+          <img src={officeFive} alt="Sala de trabajo compartida" className="w-100 rounded shadow-sm mb-2" />
           <p className="text-secondary">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptate provident voluptas fugit maiores harum nobis? In omnis nihil mollitia consequatur sequi culpa praesentium fugiat iusto recusandae ad, consequuntur inventore sapiente.</p>
         </div>
         <div className="mb-5">
-          <img src="/src/assets/oficina.jpg" alt="Img_3" className="w-100 rounded shadow-sm mb-2" />
+          <img src={office} alt="Oficina equipada para trabajar" className="w-100 rounded shadow-sm mb-2" />
           <p className="text-secondary">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptate provident voluptas fugit maiores harum nobis? In omnis nihil mollitia consequatur sequi culpa praesentium fugiat iusto recusandae ad, consequuntur inventore sapiente.</p>
         </div>
       </main>
