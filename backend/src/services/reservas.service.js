@@ -158,6 +158,26 @@ export const ReservasService = {
     return reserva;
   },
 
+  // verificar que no comenzo el turno
+  async canCancel(idReserva, idUsuario) {
+    const query = `
+        SELECT
+            TIMESTAMP(r.fecha, t.hora_inicio) > NOW()
+                AS puede_cancelar
+        FROM Reserva r
+        INNER JOIN Turno t ON r.id_turno = t.id_turno
+        WHERE r.id_reserva = ?
+          AND r.id_usuario = ?
+    `;
+
+    const [rows] = await pool.execute(query, [
+        idReserva,
+        idUsuario
+    ]);
+
+    return rows[0]?.puede_cancelar === 1;
+  },
+
   async cancelMyReservation(idReserva, idUsuario) {
     if (
       !Number.isSafeInteger(idReserva) ||
@@ -168,20 +188,44 @@ export const ReservasService = {
       throw crearError("Los identificadores no son válidos.", 400);
     }
 
-    const affectedRows = await ReservaRepository.cancelByIdAndUserId(
+    const reserva = await ReservaRepository.findByIdAndUserId(
       idReserva,
       idUsuario,
     );
 
-    if (affectedRows === 0) {
-      throw crearError(
-        "La reserva no existe, no te pertenece o ya está cancelada.",
-        404,
-      );
-    }
+    if (!reserva || reserva.estado === "cancelada") {
+    throw crearError(
+      "La reserva no existe, no te pertenece o ya está cancelada.",
+      404,
+    );
+  }
 
-    return { id_reserva: idReserva, estado: "cancelada" };
-  },
+    const puedeCancelar = await ReservaRepository.canCancel(
+    idReserva,
+    idUsuario,
+  );
+
+  if (!puedeCancelar) {
+    throw crearError(
+      "No se puede cancelar una reserva cuyo turno ya comenzó.",
+      409,
+    );
+  }
+
+  const affectedRows = await ReservaRepository.cancelByIdAndUserId(
+    idReserva,
+    idUsuario,
+  );
+
+  if (affectedRows === 0) {
+    throw crearError(
+      "La reserva ya no está disponible para cancelación.",
+      409,
+    );
+  }
+
+  return { id_reserva: idReserva, estado: "cancelada" };
+},
 
   async getAll() {
     return ReservaRepository.findAll();

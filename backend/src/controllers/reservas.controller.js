@@ -99,7 +99,7 @@ export const ReservasController = {
         reserva,
       });
     } catch (error) {
-      if ([400, 404].includes(error.status)) {
+      if ([400, 404, 409].includes(error.status)) {
         return res.status(error.status).json({ error: error.message });
       }
 

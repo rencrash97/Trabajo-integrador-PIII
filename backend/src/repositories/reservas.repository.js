@@ -98,14 +98,35 @@ export const ReservaRepository = {
     return rows[0] ?? null;
   },
 
+  // devuelve true cuando el comienzo del turno todavía está en el futuro 
+  async canCancel(idReserva, idUsuario) {
+    const query = `
+      SELECT
+        TIMESTAMP(r.fecha, t.hora_inicio) > NOW() AS puede_cancelar
+      FROM Reserva r
+      INNER JOIN Turno t ON r.id_turno = t.id_turno
+      WHERE r.id_reserva = ?
+        AND r.id_usuario = ?
+    `;
+
+    const [rows] = await pool.execute(query, [
+      idReserva,
+      idUsuario,
+    ]);
+
+    return rows[0]?.puede_cancelar === 1;
+  },
+
   async cancelByIdAndUserId(idReserva, idUsuario) {
     const query = `
-    UPDATE Reserva
-    SET estado = 'cancelada'
-    WHERE id_reserva = ?
-      AND id_usuario = ?
-      AND estado IN ('pendiente', 'confirmada')
-  `;
+    UPDATE Reserva r
+    INNER JOIN Turno t ON r.id_turno = t.id_turno
+    SET r.estado = 'cancelada'
+    WHERE r.id_reserva = ?
+      AND r.id_usuario = ?
+      AND r.estado IN ('pendiente', 'confirmada')
+      AND TIMESTAMP(r.fecha, t.hora_inicio) > NOW();
+    `;
 
     const [result] = await pool.execute(query, [idReserva, idUsuario]);
 
