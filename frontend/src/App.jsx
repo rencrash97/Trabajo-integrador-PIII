@@ -13,6 +13,7 @@ import Register from './components/auth/login/Register.jsx';
 import PendingReservations from './components/reservations/admins/PendingReservations.jsx';
 import OfficeManagement from './components/office_management/OfficeManagement.jsx';
 import TechnicalSupport from './components/support/TechnicalSupport.jsx';
+import UserManagement from './userManagement/UserManagement.jsx';
 
 function App() {
 
@@ -52,6 +53,15 @@ function App() {
                 <PendingReservations />
               </Protected>
             }
+          />
+          <Route
+            path="/user/management"
+            element={
+              <Protected allowedRoles={["super_admin"]}>
+                <UserManagement />
+              </Protected>
+            }
+
           />
         </Route>
 
