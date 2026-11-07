@@ -12,8 +12,8 @@ const Navigation = () => {
 
     const handleLogout = () => {
         navigate("/");
-        setTimeout(() => localLogout(),10); //timeout porque no le da tiempo a navigate a moverse de directorio
-        };
+        setTimeout(() => localLogout(), 10); //timeout porque no le da tiempo a navigate a moverse de directorio
+    };
 
     const navigateLogin = () => {
         navigate("/login");
@@ -36,15 +36,28 @@ const Navigation = () => {
 
                     {isSignedIn && (
                         <NavDropdown title="☰ Menú" align="start">
-                            <NavDropdown.Item href="/reservations">Mis Reservas</NavDropdown.Item>
                             <NavDropdown.Item href="/catalog">Catálogo</NavDropdown.Item>
+                            <NavDropdown.Item href="/reservations">Mis Reservas</NavDropdown.Item>
                             {["admin", "super_admin"].includes(userRole) && (
-                            <NavDropdown.Item
-                                as={Link}
-                                to="/reservations/all">
-                                Gestión de reservas
-                                { /* no recarga la pagina */}
-                            </NavDropdown.Item>
+                                <>
+                                    <NavDropdown.Item
+                                        as={Link}
+                                        to="/reservations/all">
+                                        Gestión de reservas
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item
+                                        as={Link}
+                                        to="/catalog/management">
+                                        Gestión de catálogos
+                                    </NavDropdown.Item>
+                                </>
+                            )}
+                            {["super_admin"].includes(userRole) && (
+                                <NavDropdown.Item
+                                    as={Link}
+                                    to="#">
+                                    Gestión de Usuarios
+                                </NavDropdown.Item>
                             )}
                             <NavDropdown.Item href="#">Soporte Técnico</NavDropdown.Item>
                             <NavDropdown.Divider />
