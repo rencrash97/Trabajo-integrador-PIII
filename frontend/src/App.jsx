@@ -12,6 +12,7 @@ import { Protected } from './components/auth/protection/Protected.jsx';
 import Register from './components/auth/login/Register.jsx';
 import PendingReservations from './components/reservations/admins/PendingReservations.jsx';
 import OfficeManagement from './components/office_management/OfficeManagement.jsx';
+import TechnicalSupport from './components/support/TechnicalSupport.jsx';
 
 function App() {
 
@@ -35,6 +36,7 @@ function App() {
           <Route path="/catalog" element={<OfficeCatalog />} />
           <Route path="/booking/:idEspacio" element={<BookingForm />} />
           <Route path="/reservations" element={<MyReservations />} />
+          <Route path="/support" element={<TechnicalSupport />} />
           <Route
             path="/catalog/management"
             element={

@@ -36,8 +36,8 @@ const Navigation = () => {
 
                     {isSignedIn && (
                         <NavDropdown title="☰ Menú" align="start">
-                            <NavDropdown.Item href="/catalog">Catálogo</NavDropdown.Item>
-                            <NavDropdown.Item href="/reservations">Mis Reservas</NavDropdown.Item>
+                            <NavDropdown.Item as={Link} to="/catalog">Catálogo</NavDropdown.Item>
+                            <NavDropdown.Item as={Link} to="/reservations">Mis Reservas</NavDropdown.Item>
                             {["admin", "super_admin"].includes(userRole) && (
                                 <>
                                     <NavDropdown.Item
@@ -59,7 +59,7 @@ const Navigation = () => {
                                     Gestión de Usuarios
                                 </NavDropdown.Item>
                             )}
-                            <NavDropdown.Item href="#">Soporte Técnico</NavDropdown.Item>
+                            <NavDropdown.Item as={Link} to="/support">Soporte Técnico</NavDropdown.Item>
                             <NavDropdown.Divider />
                             <NavDropdown.Item href="#" onClick={handleLogout}>Cerrar Sesión</NavDropdown.Item>
                         </NavDropdown>
