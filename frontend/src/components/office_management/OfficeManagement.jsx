@@ -1,4 +1,4 @@
-import "./officeManagment.css"
+import "./officeManagement.css";
 import { useState, useEffect, useContext } from "react";
 import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import { apiRequest } from "../../general/api.js";
@@ -6,11 +6,15 @@ import { JsonAuthContext } from "../../general/authContext.js";
 import { errorToast, successToast } from "../../general/toast.js";
 import CreateEditOffice from "./CreateEditOffice.jsx";
 
+const STATUS_COOLDOWN_MS = 1000;
+
 const OfficeManagement = () => {
     const { token } = useContext(JsonAuthContext);
     const [offices, setOffices] = useState([]);
+    const [updatingStatus, setUpdatingStatus] = useState(false);
     const [showOfficeModal, setShowOfficeModal] = useState(false);
     const [selectedOffice, setSelectedOffice] = useState(null);
+    const [guardandoOficina, setGuardandoOficina] = useState(false);
 
     const loadOffices = () => {
         if (!token) return;
@@ -26,9 +30,12 @@ const OfficeManagement = () => {
 
 
     const handleToggleStatus = async (idEspacio, switchChecked) => {
+        if (updatingStatus) return;
+
+        setUpdatingStatus(true);
+
         try {
             const estadoActual = switchChecked ? true : false;
-            console.log(`Enviando a DB para espacio ${idEspacio}:`, estadoActual);
 
             await apiRequest(`/api/admin/espacios/${idEspacio}/estado`, {
                 method: "PATCH",
@@ -36,16 +43,18 @@ const OfficeManagement = () => {
                 body: { activo: estadoActual }
             });
 
-            successToast(`Oficina ${estadoActual ?
-                "Se dió de alta el espacio "
-                :
-                "Se dió de baja el espacio "
-                } ${idEspacio} con éxito.`);
+            successToast(
+                estadoActual
+                    ? "Espacio activado correctamente."
+                    : "Espacio desactivado correctamente."
+            );
 
             loadOffices();
 
         } catch (err) {
             errorToast(`No se pudo cambiar el estado: ${err.message}`);
+        } finally {
+            window.setTimeout(() => setUpdatingStatus(false), STATUS_COOLDOWN_MS);
         }
     };
 
@@ -61,6 +70,9 @@ const OfficeManagement = () => {
 
 
     const handleSaveOffice = async (formData) => {
+        if (guardandoOficina) return;
+
+        setGuardandoOficina(true);
         try {
             const dataFormat = {
                 nombre: formData.nombre,
@@ -104,6 +116,8 @@ const OfficeManagement = () => {
             loadOffices();
         } catch (err) {
             errorToast(`Error al guardar la oficina: ${err.message}`);
+        } finally {
+            setGuardandoOficina(false);
         }
     };
 
@@ -121,7 +135,7 @@ const OfficeManagement = () => {
                         className="fw-bold px-4 py-2 shadow-sm"
                         onClick={handleCreateNavigate}
                     >
-                        Crear Nueva Oficina
+                        + Crear Nueva Oficina
                     </Button>
                 </div>
 
@@ -132,7 +146,7 @@ const OfficeManagement = () => {
                         return (
                             <Col key={office.id_espacio} md={4}>
                                 <Card
-                                    className={`office-card h-100 shadow-sm border-0 ${!isAvailable ? "opacity-50 bg-white" : ""}`}
+                                    className={`management-office-card h-100 ${!isAvailable ? "management-office-card--inactive" : ""}`}
                                 >
                                     <Card.Body className="d-flex flex-column p-4">
                                         <div className="d-flex justify-content-between align-items-start mb-2">
@@ -144,14 +158,15 @@ const OfficeManagement = () => {
                                                 type="switch"
                                                 id={`status-switch-${office.id_espacio}`}
                                                 checked={isAvailable}
+                                                disabled={updatingStatus}
                                                 onChange={(e) => handleToggleStatus(office.id_espacio, e.target.checked)}
-                                                className="ms-2 custom-switch"
-                                                style={{ cursor: "pointer" }}
+                                                className={`ms-2 management-status-switch ${updatingStatus ? "management-status-switch--disabled" : ""}`}
+                                                aria-label={`${isAvailable ? "Desactivar" : "Activar"} ${office.nombre}`}
                                             />
                                         </div>
 
                                         <Card.Subtitle className="mb-3 text-muted">
-                                            🗺️ {office.ubicacion}
+                                            {office.ubicacion}
                                         </Card.Subtitle>
 
                                         <Card.Text className="text-secondary mb-4 small">
@@ -164,12 +179,12 @@ const OfficeManagement = () => {
                                                     Capacidad: {office.capacidad} pers.
                                                 </span>
                                                 <span className="fw-bold text-dark fs-5">
-                                                    ${parseFloat(office.precio_por_turno).toLocaleString("es-AR")} <span className="fs-6 text-muted fw-normal">/h.</span>
+                                                    ${parseFloat(office.precio_por_turno).toLocaleString("es-AR")} <span className="fs-6 text-muted fw-normal">/ turno</span>
                                                 </span>
                                             </div>
 
                                             <Button
-                                                variant="outline-primary"
+                                                variant="primary"
                                                 className="w-100 fw-bold py-2"
                                                 onClick={() => handleEditNavigate(office)}
                                             >

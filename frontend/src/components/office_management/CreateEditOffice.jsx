@@ -45,7 +45,7 @@ const CreateEditOffice = ({ show, onHide, onSave, officeToEdit }) => {
     const isEditMode = !!officeToEdit;
 
     return (
-        <Modal show={show} onHide={onHide} size="lg" centered>
+        <Modal show={show} onHide={onHide} size="lg" centered className="office-management-modal">
             <Modal.Header closeButton>
                 <Modal.Title className="fw-bold text-dark">
                     {isEditMode ? "Editar Oficina" : "Crear Nueva Oficina"}
@@ -70,7 +70,7 @@ const CreateEditOffice = ({ show, onHide, onSave, officeToEdit }) => {
 
                         <Col md={12}>
                             <Form.Group controlId="officeLocation">
-                                <Form.Label className="fw-semibold text-secondary">📍 Ubicación / Sede</Form.Label>
+                                <Form.Label className="fw-semibold text-secondary">Ubicación / Sede</Form.Label>
                                 <Form.Control
                                     type="text"
                                     name="ubicacion"
@@ -84,7 +84,7 @@ const CreateEditOffice = ({ show, onHide, onSave, officeToEdit }) => {
 
                         <Col md={6}>
                             <Form.Group controlId="officeCapacity">
-                                <Form.Label className="fw-semibold text-secondary">👥 Capacidad (personas)</Form.Label>
+                                <Form.Label className="fw-semibold text-secondary">Capacidad (personas)</Form.Label>
                                 <Form.Control
                                     type="number"
                                     name="capacidad"
@@ -99,7 +99,7 @@ const CreateEditOffice = ({ show, onHide, onSave, officeToEdit }) => {
 
                         <Col md={6}>
                             <Form.Group controlId="officePrice">
-                                <Form.Label className="fw-semibold text-secondary">💵 Precio por Turno ($)</Form.Label>
+                                <Form.Label className="fw-semibold text-secondary">Precio por turno ($)</Form.Label>
                                 <Form.Control
                                     type="number"
                                     name="precio_por_turno"
