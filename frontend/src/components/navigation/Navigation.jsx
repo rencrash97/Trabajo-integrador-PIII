@@ -55,7 +55,7 @@ const Navigation = () => {
                             {["super_admin"].includes(userRole) && (
                                 <NavDropdown.Item
                                     as={Link}
-                                    to="#">
+                                    to="/user/management">
                                     Gestión de Usuarios
                                 </NavDropdown.Item>
                             )}

@@ -1,0 +1,10 @@
+.user-status-pendiente {
+  background-color: #f6df8d !important;
+  color: #5e4900 !important;
+}
+
+.user-status-deshabilitado {
+  background-color: #e1e7e3 !important;
+  color: #58645d !important;
+}
+

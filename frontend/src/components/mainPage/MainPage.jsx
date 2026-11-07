@@ -14,15 +14,15 @@ const MainPage = () => {
       <main>
         <div className="mb-5">
           <img src={officeThree} alt="Espacio de coworking luminoso" className="w-100 rounded shadow-sm mb-2" />
-          <p className="text-secondary">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptate provident voluptas fugit maiores harum nobis? In omnis nihil mollitia consequatur sequi culpa praesentium fugiat iusto recusandae ad, consequuntur inventore sapiente.</p>
+          <p className="text-secondary">Nuestras áreas comunes están diseñadas para maximizar la entrada de luz natural, creando un entorno estimulante que potencia la productividad. Disfrutá de un espacio abierto y dinámico, ideal para conectar con otros profesionales y hacer crecer tu red de contactos.</p>
         </div>
         <div className="mb-5">
           <img src={officeFive} alt="Sala de trabajo compartida" className="w-100 rounded shadow-sm mb-2" />
-          <p className="text-secondary">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptate provident voluptas fugit maiores harum nobis? In omnis nihil mollitia consequatur sequi culpa praesentium fugiat iusto recusandae ad, consequuntur inventore sapiente.</p>
+          <p className="text-secondary">Fomentá la colaboración en nuestras salas de trabajo compartidas, equipadas con mobiliario ergonómico y zonas de descanso interactivas. El equilibrio perfecto entre concentración y sinergia en equipo, adaptado al ritmo de las empresas modernas.</p>
         </div>
         <div className="mb-5">
           <img src={office} alt="Oficina equipada para trabajar" className="w-100 rounded shadow-sm mb-2" />
-          <p className="text-secondary">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptate provident voluptas fugit maiores harum nobis? In omnis nihil mollitia consequatur sequi culpa praesentium fugiat iusto recusandae ad, consequuntur inventore sapiente.</p>
+          <p className="text-secondary">Si tu empresa busca mayor privacidad, disponemos de oficinas privadas y salas de reuniones totalmente equipadas con tecnología de vanguardia y conectividad de alta velocidad. Todo lo que necesitás para operar desde el primer día sin preocuparte por la gestión del lugar.</p>
         </div>
       </main>
     </Container>
