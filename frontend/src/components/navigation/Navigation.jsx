@@ -36,7 +36,6 @@ const Navigation = () => {
 
                     {isSignedIn && (
                         <NavDropdown title="☰ Menú" align="start">
-                            <NavDropdown.Item href="#">Mi Perfil</NavDropdown.Item>
                             <NavDropdown.Item href="/reservations">Mis Reservas</NavDropdown.Item>
                             <NavDropdown.Item href="/catalog">Catálogo</NavDropdown.Item>
                             {["admin", "super_admin"].includes(userRole) && (

@@ -10,7 +10,7 @@ export const Protected = ({ children, allowedRoles }) => {
   }
 
   if (allowedRoles && !allowedRoles.includes(userRole)) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="*" replace />;
   }
 
   return children;

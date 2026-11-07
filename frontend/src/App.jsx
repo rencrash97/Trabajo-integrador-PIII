@@ -35,7 +35,14 @@ function App() {
           <Route path="/catalog" element={<OfficeCatalog />} />
           <Route path="/booking/:idEspacio" element={<BookingForm />} />
           <Route path="/reservations" element={<MyReservations />} />
-          <Route path="/catalog/management" element={<OfficeManagement />} />
+          <Route
+            path="/catalog/management"
+            element={
+              <Protected allowedRoles={["admin", "super_admin"]}>
+                <OfficeManagement />
+              </Protected>
+            }
+          />
           <Route
             path="/reservations/all"
             element={
